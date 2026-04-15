@@ -49,9 +49,17 @@ def _downgrade_packages(config: Config) -> None:
     for pkg in packages:
         print(f"# {pkg.name}{pkg.version}  ({pkg.description})")
 
-    run([
-        "sudo", "downgrade",
-        "--latest", "--prefer-cache", "--ignore", "always",
-        *[pkg.downgrade_target for pkg in packages],
-        "--", "--noconfirm", "--needed",
-    ])
+    run(
+        [
+            "sudo",
+            "downgrade",
+            "--latest",
+            "--prefer-cache",
+            "--ignore",
+            "always",
+            *[pkg.downgrade_target for pkg in packages],
+            "--",
+            "--noconfirm",
+            "--needed",
+        ]
+    )

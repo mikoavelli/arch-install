@@ -11,14 +11,22 @@ def run_step(config: Config) -> None:
     run(["sudo", "pacman", "-S", "--needed", "--noconfirm", *packages])
 
     section("[Bootstrap] Filtering best mirrors with reflector...")
-    run([
-        "sudo", "reflector",
-        "--country", config.bootstrap.mirrors,
-        "--fastest", "10",
-        "--protocol", "https",
-        "--sort", "rate",
-        "--save", "/etc/pacman.d/mirrorlist",
-    ])
+    run(
+        [
+            "sudo",
+            "reflector",
+            "--country",
+            config.bootstrap.mirrors,
+            "--fastest",
+            "10",
+            "--protocol",
+            "https",
+            "--sort",
+            "rate",
+            "--save",
+            "/etc/pacman.d/mirrorlist",
+        ]
+    )
 
     section("[Bootstrap] Updating system with new mirrors...")
     run("sudo pacman -Syu --noconfirm")

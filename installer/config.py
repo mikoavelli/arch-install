@@ -98,13 +98,17 @@ class Config:
     git: GitConfig
     gschemas: list[GSchema]
 
-    PACMAN_GROUPS: tuple[str, ...] = field(default=(
-        "niri_core",
-        "amd_video_drivers",
-        "essential",
-        "lazyvim_deps",
-        "aur",
-    ), init=False, repr=False)
+    PACMAN_GROUPS: tuple[str, ...] = field(
+        default=(
+            "niri_core",
+            "amd_video_drivers",
+            "essential",
+            "lazyvim_deps",
+            "aur",
+        ),
+        init=False,
+        repr=False,
+    )
 
     def system_packages(self) -> list[str]:
         names: list[str] = []

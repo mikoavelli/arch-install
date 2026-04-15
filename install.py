@@ -15,11 +15,11 @@ def main() -> None:
     config = load_config()
 
     steps = [
-        ("Bootstrap",   lambda: bootstrap.run_step(config)),
-        ("Yay",         lambda: yay.run_step()),
-        ("Packages",    lambda: packages.run_step(config)),
-        ("System",      lambda: system.run_step(config)),
-        ("User",        lambda: user.run_step(config)),
+        ("Bootstrap", lambda: bootstrap.run_step(config)),
+        ("Yay", lambda: yay.run_step()),
+        ("Packages", lambda: packages.run_step(config)),
+        ("System", lambda: system.run_step(config)),
+        ("User", lambda: user.run_step(config)),
         ("Secure Boot", lambda: secureboot.run_step(config)),
     ]
 
@@ -37,8 +37,12 @@ def main() -> None:
     run("flatpak repair")
 
     print("\nSetup complete! Please run the following scripts:")
-    print("   1) stow.sh        — from the dotfiles directory to create symlinks for your configs,")
-    print("   2) postinstall.py — from the arch_niri directory for post-installation setup.")
+    print(
+        "   1) stow.sh        — from the dotfiles directory to create symlinks for your configs,"
+    )
+    print(
+        "   2) postinstall.py — from the arch_niri directory for post-installation setup."
+    )
 
 
 if __name__ == "__main__":

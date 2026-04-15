@@ -1,4 +1,3 @@
-import subprocess
 from pathlib import Path
 
 from installer.config import Config
@@ -11,9 +10,7 @@ Host github.com
   IdentityFile ~/.ssh/github-auth
 """
 
-IDEAPAD_SUDOERS = (
-    r"%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee /sys/bus/platform/drivers/ideapad_acpi/VPC????\:??/conservation_mode"
-)
+IDEAPAD_SUDOERS = r"%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee /sys/bus/platform/drivers/ideapad_acpi/VPC????\:??/conservation_mode"
 
 
 def run_step(config: Config) -> None:
@@ -46,11 +43,10 @@ def _setup_ideapad() -> None:
     modules_file = Path("/etc/modules")
     content = modules_file.read_text() if modules_file.exists() else ""
     if "ideapad_laptop" not in content:
-        subprocess.run(
+        run(
             ["sudo", "tee", "-a", "/etc/modules"],
             input="ideapad_laptop\n",
-            text=True,
-            check=True,
+            capture=True,
         )
 
 

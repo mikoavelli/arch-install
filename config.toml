@@ -115,6 +115,7 @@ packages = [
   { name = "xdg-terminal-exec", description = "Proposed standard for launching desktop apps with Terminal=true" },
   { name = "code-marketplace", description = "Enable VSCode marketplace in Code OSS" },
   { name = "yt-dlp-git", description = "A youtube-dl fork with additional features (git)" },
+  { name = "windscribe-cli-v2-bin", description = "Windscribe CLI tool for Linux (build without NetworkManager)" },
 ]
 
 [packages.flatpak]

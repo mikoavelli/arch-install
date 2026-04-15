@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from installer.config import load_config
+from installer.config import Config, load_config
 from installer.runner import run, section
 
 
@@ -28,28 +28,38 @@ def _create_ssh_keys(email: str) -> None:
         if key_path.exists():
             print(f"  Key {key_path} already exists, skipping")
             continue
-        run([
-            "ssh-keygen", "-t", "ed25519",
-            "-C", email,
-            "-f", str(key_path),
-            "-N", "",
-        ])
+        run(
+            [
+                "ssh-keygen",
+                "-t",
+                "ed25519",
+                "-C",
+                email,
+                "-f",
+                str(key_path),
+                "-N",
+                "",
+            ]
+        )
 
 
-def _configure_git(config, email: str, name: str) -> None:
+def _configure_git(config: Config, email: str, name: str) -> None:
     section("[Git] Base git configuration...")
 
     sign_key = str(Path.home() / ".ssh" / "github-sign.pub")
     allowed = str(Path.home() / ".ssh" / "allowed_signers")
 
+    placeholders = {
+        "{email}": email,
+        "{name}": name,
+        "{sign_key}": sign_key,
+        "{allowed}": allowed,
+    }
+
     for setting in config.git.settings:
         value = setting.value
-        # Replace placeholders
-        value = value.replace("{email}", email)
-        value = value.replace("{name}", name)
-        value = value.replace("{sign_key}", sign_key)
-        value = value.replace("{allowed}", allowed)
-
+        for placeholder, replacement in placeholders.items():
+            value = value.replace(placeholder, replacement)
         run(["git", "config", "set", "--global", setting.key, value])
 
 

@@ -42,18 +42,8 @@ def run(
     return result
 
 
-def run_shell(cmd: str, *, check: bool = True) -> subprocess.CompletedProcess:
-    print(f"  $ {cmd}", flush=True)
-    result = subprocess.run(cmd, shell=True, check=False, text=True)
-    if check and result.returncode != 0:
-        raise CommandError(f"Shell command failed (exit {result.returncode}): {cmd}")
-    return result
-
-
 def command_exists(name: str) -> bool:
-    result = subprocess.run(
-        ["which", name], capture_output=True, check=False
-    )
+    result = subprocess.run(["which", name], capture_output=True, check=False)
     return result.returncode == 0
 
 

@@ -48,9 +48,18 @@ def _disable_beep() -> None:
     section("[System] Disabling motherboard speaker beep...")
     write_file_sudo("/etc/modprobe.d/nobeep.conf", "blacklist pcspkr\n")
 
+
 def _configure_iwd() -> None:
     section("[System/Network] Configuring iwd...")
-    run(["sudo", "ln", "-sf", "/run/systemd/resolve/stub-resolv.conf", "/etc/resolv.conf"])
+    run(
+        [
+            "sudo",
+            "ln",
+            "-sf",
+            "/run/systemd/resolve/stub-resolv.conf",
+            "/etc/resolv.conf",
+        ]
+    )
     run(["sudo", "mkdir", "-p", "/etc/iwd"])
     write_file_sudo("/etc/iwd/main.conf", IWD_CONFIG)
 
