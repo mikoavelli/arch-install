@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import load_config
-from installer.runner import CommandError, run, section
+from installer.runner import CommandError, run, section, command_exists
 from installer.steps import bootstrap, yay, packages, system, user, secureboot
 
 
@@ -33,15 +33,17 @@ def main() -> None:
     section("[Cleanup] Removing unused dependencies...")
     run("yay -Yc --noconfirm")
     run("yay -Scc --noconfirm")
-    run("flatpak update -y")
-    run("flatpak repair")
 
-    print("\nSetup complete! Please run the following scripts:")
+    if command_exists("flatpak"):
+        run("flatpak update -y")
+        run("flatpak repair")
+
+    print("\n\033[1;32mSetup complete! Please run the following scripts:\033[0m")
     print(
-        "   1) stow.sh        — from the dotfiles directory to create symlinks for your configs,"
+        "   1) postinstall.py — from the arch-niri directory for post-installation setup."
     )
     print(
-        "   2) postinstall.py — from the arch_niri directory for post-installation setup."
+        "   2) stow.sh        — from the dotfiles directory to create symlinks for your configs,"
     )
 
 

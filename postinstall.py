@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import Config, load_config
-from installer.runner import run, section
+from installer.runner import run, section, command_exists
 
 
 def prompt(msg: str) -> str:
@@ -82,11 +82,19 @@ def _setup_allowed_signers(email: str) -> None:
 
 
 def _update_tldr() -> None:
-    section("[tldr] Downloading cache...")
+    if not command_exists("tldr"):
+        section("[TLDR] Command 'tldr' is not found, skipping")
+        return
+
+    section("[TLDR] Downloading cache...")
     run("tldr --update")
 
 
 def _setup_rust() -> None:
+    if not command_exists("rustup"):
+        section("[Rust] Package 'rustup' is not installed, skipping")
+        return
+
     section("[Rust] Installing latest stable toolchain...")
     run("rustup default stable")
 

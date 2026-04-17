@@ -74,7 +74,7 @@ packages = [
   { name = "papers", description = "Document viewer for PDF and other document formats" },
   { name = "less", description = "A terminal based program for viewing text files" },
   { name = "man", description = "A utility for reading man pages" },
-  { name = "nautilus", description = "Default file manager for GNOME", version = "=~49" },
+  { name = "nautilus", description = "Default file manager for GNOME" },
   { name = "ntfs-3g", description = "NTFS filesystem driver and utilities" },
   { name = "power-profiles-daemon", description = "Makes power profiles handling available over D-Bus" },
   { name = "pwgen", description = "Password generator for creating easily memorable passwords" },

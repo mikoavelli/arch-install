@@ -1,5 +1,5 @@
 from installer.config import Config
-from installer.runner import run, section, write_file_sudo
+from installer.runner import run, section, write_file_sudo, command_exists
 
 IWD_CONFIG = """\
 [General]
@@ -50,6 +50,10 @@ def _disable_beep() -> None:
 
 
 def _configure_iwd() -> None:
+    if not command_exists("iwctl"):
+        section("[System/Network] Package 'iwd' is not installed, skipping")
+        return
+
     section("[System/Network] Configuring iwd...")
     run(
         [
@@ -65,6 +69,10 @@ def _configure_iwd() -> None:
 
 
 def _configure_ufw(config: Config) -> None:
+    if not command_exists("ufw"):
+        section("[System/Security] Package 'ufw' is not installed, skipping")
+        return
+
     section("[System/Security] Configuring ufw...")
     run("sudo ufw default deny incoming")
     run("sudo ufw default allow outgoing")

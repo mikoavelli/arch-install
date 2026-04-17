@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from installer.config import Config
-from installer.runner import run, section, write_file_sudo
+from installer.runner import run, section, write_file_sudo, command_exists
 
 SSH_CONFIG_BLOCK = """\
 Host github.com
@@ -51,9 +51,13 @@ def _setup_ideapad() -> None:
 
 
 def _apply_gsettings(config: Config) -> None:
+    if not command_exists("gsettings"):
+        section("[User/Gsettings] Command 'gsettings' is not found, skipping")
+        return
+
     if not config.gschemas:
         return
 
-    section("[User] Applying gsettings...")
+    section("[User/Gsettings] Applying gsettings...")
     for g in config.gschemas:
         run(["gsettings", "set", g.schema, g.key, g.value])
