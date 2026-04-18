@@ -1,6 +1,6 @@
 [bootstrap]
 description = "Bootstrap configuration"
-mirrors = "Lithuania,Latvia,Estonia,Poland,Russia"
+mirrors = ["Lithuania", "Latvia", "Estonia", "Poland", "Russia"]
 packages = [
   { name = "git", description = "The fast distributed version control system" },
   { name = "reflector", description = "Script to retrieve and filter the latest Pacman mirror list" },

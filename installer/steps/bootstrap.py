@@ -16,7 +16,7 @@ def run_step(config: Config) -> None:
             "sudo",
             "reflector",
             "--country",
-            config.bootstrap.mirrors,
+            ",".join(config.bootstrap.mirrors),
             "--fastest",
             "10",
             "--protocol",

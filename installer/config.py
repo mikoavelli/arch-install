@@ -39,7 +39,7 @@ class PackageGroup:
 @dataclass
 class BootstrapConfig:
     description: str
-    mirrors: str
+    mirrors: list[str]
     packages: list[Package]
 
 
@@ -149,7 +149,7 @@ def load_config(path: Path | None = None) -> Config:
     ]
     bootstrap = BootstrapConfig(
         description=bootstrap_data.get("description", ""),
-        mirrors=bootstrap_data.get("mirrors", ""),
+        mirrors=bootstrap_data.get("mirrors", []),
         packages=bootstrap_packages,
     )
 
