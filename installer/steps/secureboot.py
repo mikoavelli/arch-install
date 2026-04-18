@@ -1,7 +1,7 @@
 import sys
 
 from installer.config import Config
-from installer.runner import run, section, command_exists
+from installer.runner import command_exists, run, section
 
 
 def run_step(config: Config) -> None:

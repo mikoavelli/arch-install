@@ -3,7 +3,8 @@ from __future__ import annotations
 import shlex
 import subprocess
 import sys
-from typing import Sequence
+from collections.abc import Sequence
+from subprocess import CompletedProcess
 
 
 class CommandError(Exception):
@@ -16,7 +17,7 @@ def run(
     check: bool = True,
     capture: bool = False,
     input: str | None = None,
-) -> subprocess.CompletedProcess:
+) -> CompletedProcess[str]:
     if isinstance(cmd, str):
         args = shlex.split(cmd)
     else:
@@ -35,9 +36,7 @@ def run(
     if check and result.returncode != 0:
         if capture:
             print(result.stderr, file=sys.stderr)
-        raise CommandError(
-            f"Command failed (exit {result.returncode}): {shlex.join(args)}"
-        )
+        raise CommandError(f"Command failed (exit {result.returncode}): {shlex.join(args)}")
 
     return result
 

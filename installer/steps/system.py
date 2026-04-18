@@ -1,5 +1,5 @@
 from installer.config import Config
-from installer.runner import run, section, write_file_sudo, command_exists
+from installer.runner import command_exists, run, section, write_file_sudo
 
 IWD_CONFIG = """\
 [General]

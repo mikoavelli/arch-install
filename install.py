@@ -2,19 +2,20 @@
 
 import sys
 from pathlib import Path
+from collections.abc import Callable
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import load_config
-from installer.runner import CommandError, run, section, command_exists
-from installer.steps import bootstrap, yay, packages, system, user, secureboot
+from installer.runner import CommandError, command_exists, run, section
+from installer.steps import bootstrap, packages, secureboot, system, user, yay
 
 
 def main() -> None:
     print("\033[1;32m-> Starting Arch Linux: Niri Installation\033[0m")
     config = load_config()
 
-    steps = [
+    steps: list[tuple[str, Callable[[], None]]] = [
         ("Bootstrap", lambda: bootstrap.run_step(config)),
         ("Yay", lambda: yay.run_step()),
         ("Packages", lambda: packages.run_step(config)),
@@ -39,12 +40,8 @@ def main() -> None:
         run("flatpak repair")
 
     print("\n\033[1;32mSetup complete! Please run the following scripts:\033[0m")
-    print(
-        "   1) postinstall.py — from the arch-niri directory for post-installation setup."
-    )
-    print(
-        "   2) stow.sh        — from the dotfiles directory to create symlinks for your configs,"
-    )
+    print("   1) postinstall.py — from the arch-niri directory for post-installation setup.")
+    print("   2) stow.sh        — from the dotfiles directory to create symlinks for your configs,")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import Config, load_config
-from installer.runner import run, section, command_exists
+from installer.runner import command_exists, run, section
 
 
 def prompt(msg: str) -> str:
