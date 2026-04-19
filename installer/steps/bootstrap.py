@@ -6,7 +6,7 @@ def run_step(config: Config) -> None:
     section("[Bootstrap] Synchronizing package databases...")
     run("sudo pacman -Sy")
 
-    packages = [p.name for p in config.bootstrap.packages]
+    packages = [p.name for p in config.bootstrap.packages] + ["git", "base-devel", "reflector"]
     section(f"[Bootstrap] Installing {len(packages)} prerequisites...")
     run(["sudo", "pacman", "-S", "--needed", "--noconfirm", *packages])
 
