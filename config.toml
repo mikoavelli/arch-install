@@ -63,6 +63,7 @@ packages = [
   { name = "exfatprogs", description = "exFAT filesystem userspace utilities" },
   { name = "ffmpegthumbnailer", description = "Lightweight video thumbnailer" },
   { name = "firefox", description = "Fast, Private & Safe Web Browser" },
+  { name = "impala", description = "TUI for managing wifi" },
   { name = "flatpak", description = "Linux application sandboxing and distribution framework" },
   { name = "fwupd", description = "Simple daemon to allow session software to update firmware" },
   { name = "gvfs", description = "Virtual filesystem implementation for GIO" },
@@ -76,9 +77,7 @@ packages = [
   { name = "less", description = "A terminal based program for viewing text files" },
   { name = "man", description = "A utility for reading man pages" },
   { name = "nautilus", description = "Default file manager for GNOME" },
-  { name = "ntfs-3g", description = "NTFS filesystem driver and utilities" },
   { name = "power-profiles-daemon", description = "Makes power profiles handling available over D-Bus" },
-  { name = "pwgen", description = "Password generator for creating easily memorable passwords" },
   { name = "sbctl", description = "Secure Boot key manager" },
   { name = "tree", description = "A directory listing program displaying a depth indented list" },
   { name = "tealdeer", description = "A fast tldr client in Rust" },
@@ -89,9 +88,7 @@ packages = [
   { name = "baobab", description = "A graphical directory tree analyzer" },
   { name = "gamescope", description = "SteamOS session compositing window manager" },
   { name = "steam", description = "Valve's digital software delivery system" },
-  { name = "zellij", description = "A terminal multiplexer" },
   { name = "cloc", description = "Count lines of code" },
-  { name = "downgrade", description = "Bash script for downgrading packages" },
 ]
 
 [packages.lazyvim_deps]
@@ -115,20 +112,20 @@ packages = [
   { name = "nautilus-open-any-terminal", description = "Context-menu entry for opening any terminal in Nautilus" },
   { name = "xdg-terminal-exec", description = "Proposed standard for launching desktop apps with Terminal=true" },
   { name = "code-marketplace", description = "Enable VSCode marketplace in Code OSS" },
-  { name = "yt-dlp-git", description = "A youtube-dl fork with additional features (git)" },
   { name = "windscribe-cli-v2-bin", description = "Windscribe CLI tool for Linux (build without NetworkManager)" },
 ]
 
 [packages.flatpak]
 description = "Flatpak packages from Flathub"
 packages = [
-  { name = "org.kde.okular", description = "Document Viewer", env = { QT_SCALE_FACTOR = "1.25" } },
   { name = "org.telegram.desktop", description = "Official Telegram Desktop client", fs = [
     "~/Downloads",
   ] },
-  { name = "org.libreoffice.LibreOffice", description = "LibreOffice with new features and enhancements" },
   { name = "org.videolan.VLC", description = "Free and open source multimedia player", env = { QT_SCALE_FACTOR = "1.25" } },
   { name = "com.obsproject.Studio", description = "Free software for live streaming and recording", env = { QT_SCALE_FACTOR = "1.25" } },
+  { name = "org.localsend.localsend_app", description = "An open source cross-platform alternative to AirDrop", fs = [
+    "~",
+  ] },
 ]
 
 [services]

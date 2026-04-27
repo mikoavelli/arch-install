@@ -23,14 +23,21 @@ def _install_system_packages(config: Config) -> None:
 
 
 def _downgrade_packages(config: Config) -> None:
-    if not command_exists("downgrade"):
-        section("[Downgrade] Package 'downgrade' is not installed, skipping")
-        return
-
     packages = config.all_downgrade_packages()
     if not packages:
         section("[Downgrade] No packages to downgrade, skipping")
         return
+
+    if not command_exists("downgrade"):
+        section("[Downgrade] Package 'downgrade' is not installed, installing")
+        run(
+            [
+                "yay",
+                "-S",
+                "noconfirm",
+                "downgrade"
+            ]
+        )
 
     section(f"[Downgrade] Downgrading {len(packages)} package(s)...")
     for pkg in packages:
@@ -63,11 +70,9 @@ def _configure_flatpaks(config: Config) -> None:
     section("[Flatpak] Applying overrides...")
 
     for pkg in packages:
-        # Apply environment variable overrides
         for env_var, value in pkg.env.items():
             run(["sudo", "flatpak", "override", f"--env={env_var}={value}", pkg.name])
 
-        # Apply filesystem overrides
         for path in pkg.fs:
             expanded = str(Path(path).expanduser())
             run(["sudo", "flatpak", "override", f"--filesystem={expanded}", pkg.name])
