@@ -36,7 +36,9 @@ def run(
     if check and result.returncode != 0:
         if capture:
             print(result.stderr, file=sys.stderr)
-        raise CommandError(f"Command failed (exit {result.returncode}): {shlex.join(args)}")
+        raise CommandError(
+            f"Command failed (exit {result.returncode}): {shlex.join(args)}"
+        )
 
     return result
 

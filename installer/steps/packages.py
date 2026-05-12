@@ -8,7 +8,7 @@ def run_step(config: Config) -> None:
     _install_system_packages(config)
     _downgrade_packages(config)
 
-    if not command_exists("flatpak"):
+    if not (command_exists("flatpak") and config.flatpak_packages()):
         section("[Flatpak] Package 'flatpak' is not installed, skipping")
         return
 

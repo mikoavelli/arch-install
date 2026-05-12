@@ -1,12 +1,30 @@
 [bootstrap]
 description = "Bootstrap configuration"
-mirrors = ["Lithuania", "Latvia", "Estonia", "Poland", "Russia"]
+mirrors = [
+  "Belarus",
+  "Russia",
+  "Ukraine",
+  "Poland",
+  "Lithuania",
+  "Latvia",
+  "Estonia",
+]
 # Also will be installed in bootstrap:
 # { name = "git", description = "The fast distributed version control system" },
 # { name = "reflector", description = "Script to retrieve and filter the latest Pacman mirror list" },
 # { name = "base-devel", description = "Basic tools to build Arch Linux packages" },
 # Check 'installer/steps/bootstrap.py' for more info.
 packages = []
+
+
+# Packages with a non-empty `version` field will be installed via `downgrade` after the main installation.
+# This packages will be added to IgnorePkg in `/etc/pacman.conf`.
+# The `version` value is passed directly to
+# downgrade's version-filtering syntax, e.g.:
+#   version = "=1.0.0-1"   -> downgrade 'pkg=1.0.0-1'
+#   version = "=~^1.2"     -> downgrade 'pkg=~^1.2'
+#   version = "<=2.0.0-1"  -> downgrade 'pkg<=2.0.0-1'
+# Packages without `version` (or version = "") are installed normally via yay.
 
 [packages.niri_core]
 description = "Niri compositor and core UI components"
@@ -17,7 +35,7 @@ packages = [
   { name = "xwayland-satellite", description = "Xwayland outside your Wayland" },
   { name = "xdg-desktop-portal-gtk", description = "xdg-desktop-portal backend using GTK" },
   { name = "xdg-desktop-portal-gnome", description = "xdg-desktop-portal backend for GNOME" },
-  { name = "ly", description = "TUI display manager" },
+  { name = "ly", description = "TUI display manager", version = "=1.3.2" },
   { name = "quickshell", description = "Flexible toolkit for making desktop shells with QtQuick" },
   { name = "rofi", description = "Window switcher, application launcher and dmenu replacement" },
   { name = "wl-clipboard", description = "Command-line copy/paste utilities for Wayland" },
@@ -38,15 +56,6 @@ packages = [
   { name = "vulkan-mesa-layers", description = "Mesa's explicit Vulkan layers" },
   { name = "vulkan-radeon", description = "Open-source Vulkan driver for AMD GPUs" },
 ]
-
-# Packages with a non-empty `version` field will be installed via `downgrade` after the main installation.
-# This packages will be added to IgnorePkg in `/etc/pacman.conf`.
-# The `version` value is passed directly to
-# downgrade's version-filtering syntax, e.g.:
-#   version = "=1.0.0-1"   -> downgrade 'pkg=1.0.0-1'
-#   version = "=~^1.2"     -> downgrade 'pkg=~^1.2'
-#   version = "<=2.0.0-1"  -> downgrade 'pkg<=2.0.0-1'
-# Packages without `version` (or version = "") are installed normally via yay.
 
 [packages.essential]
 description = "Essential system and user packages"
@@ -110,7 +119,7 @@ description = "AUR packages"
 packages = [
   { name = "morewaita-icon-theme", description = "Expanded Adwaita-styled companion icon theme" },
   { name = "nautilus-open-any-terminal", description = "Context-menu entry for opening any terminal in Nautilus" },
-  { name = "xdg-terminal-exec", description = "Proposed standard for launching desktop apps with Terminal=true" },
+  { name = "xdg-terminal-exec-git", description = "Proposed standard for launching desktop apps with Terminal=true" },
   { name = "code-marketplace", description = "Enable VSCode marketplace in Code OSS" },
   { name = "windscribe-cli-v2-bin", description = "Windscribe CLI tool for Linux (build without NetworkManager)" },
 ]
@@ -136,7 +145,12 @@ enable = [
   "bluetooth.service",
   "systemd-resolved.service",
 ]
-disable = ["remote-fs.target", "avahi-daemon.service", "getty@tty2.service"]
+disable = [
+  "remote-fs.target",
+  "avahi-daemon.service",
+  "getty@tty2.service",
+  "systemd-networkd-wait-online.service",
+]
 mask = ["remote-fs.target", "avahi-daemon.service"]
 
 [ufw]
@@ -152,6 +166,7 @@ sign_targets = [
   "/boot/vmlinuz-linux",
   "/boot/EFI/systemd/systemd-bootx64.efi",
   "/boot/EFI/BOOT/BOOTX64.EFI",
+  "/boot/EFI/Linux/arch-linux.efi",
 ]
 
 [git]
