@@ -30,14 +30,7 @@ def _downgrade_packages(config: Config) -> None:
 
     if not command_exists("downgrade"):
         section("[Downgrade] Package 'downgrade' is not installed, installing")
-        run(
-            [
-                "yay",
-                "-S",
-                "noconfirm",
-                "downgrade"
-            ]
-        )
+        run(["yay", "-S", "--noconfirm", "downgrade"])
 
     section(f"[Downgrade] Downgrading {len(packages)} package(s)...")
     for pkg in packages:
