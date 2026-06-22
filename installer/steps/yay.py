@@ -1,7 +1,6 @@
-import subprocess
-from pathlib import Path
+import tempfile
 
-from installer.runner import CommandError, command_exists, run, section
+from installer.runner import command_exists, run, section
 
 
 def run_step() -> None:
@@ -11,18 +10,6 @@ def run_step() -> None:
 
     section("[AUR] Installing yay...")
 
-    tmp = Path("/tmp/yay")
-    if tmp.exists():
-        run(["rm", "-rf", str(tmp)])
-
-    run(["git", "clone", "https://aur.archlinux.org/yay.git", str(tmp)])
-
-    result = subprocess.run(
-        ["makepkg", "-si", "--noconfirm"],
-        cwd=tmp,
-        check=False,
-    )
-    if result.returncode != 0:
-        raise CommandError("makepkg failed while building yay")
-
-    run(["rm", "-rf", str(tmp)])
+    with tempfile.TemporaryDirectory(prefix="yay-") as tmp:
+        run(["git", "clone", "https://aur.archlinux.org/yay.git", tmp])
+        run(["makepkg", "-si", "--noconfirm"], cwd=tmp)

@@ -46,7 +46,6 @@ def _downgrade_packages(config: Config) -> None:
 
     run(
         [
-            "sudo",
             "downgrade",
             "--latest",
             "--prefer-cache",
@@ -56,7 +55,8 @@ def _downgrade_packages(config: Config) -> None:
             "--",
             "--noconfirm",
             "--needed",
-        ]
+        ],
+        sudo=True,
     )
 
 
@@ -72,8 +72,8 @@ def _configure_flatpaks(config: Config) -> None:
 
     for pkg in packages:
         for env_var, value in pkg.env.items():
-            run(["sudo", "flatpak", "override", f"--env={env_var}={value}", pkg.name])
+            run(["flatpak", "override", f"--env={env_var}={value}", pkg.name], sudo=True)
 
         for path in pkg.fs:
             expanded = str(Path(path).expanduser())
-            run(["sudo", "flatpak", "override", f"--filesystem={expanded}", pkg.name])
+            run(["flatpak", "override", f"--filesystem={expanded}", pkg.name], sudo=True)

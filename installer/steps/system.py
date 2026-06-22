@@ -23,7 +23,7 @@ def run_step(config: Config) -> None:
 
 def _set_ttl() -> None:
     section("[System] Changing default TTL for mobile hotspot...")
-    run(["sudo", "mkdir", "-p", "/etc/sysctl.d/"])
+    run(["mkdir", "-p", "/etc/sysctl.d/"], sudo=True)
     write_file_sudo(
         "/etc/sysctl.d/99-ttl-mobile-hotspot.conf",
         "net.ipv4.ip_default_ttl = 65\n",
@@ -32,7 +32,7 @@ def _set_ttl() -> None:
 
 def _power_key() -> None:
     section("[System] Disabling suspend on power key press...")
-    run(["sudo", "mkdir", "-p", "/etc/systemd/logind.conf.d"])
+    run(["mkdir", "-p", "/etc/systemd/logind.conf.d"], sudo=True)
     write_file_sudo(
         "/etc/systemd/logind.conf.d/99-power-key.conf",
         "[Login]\nHandlePowerKey=ignore\n",
@@ -57,14 +57,14 @@ def _configure_iwd() -> None:
     section("[System/Network] Configuring iwd...")
     run(
         [
-            "sudo",
             "ln",
             "-sf",
             "/run/systemd/resolve/stub-resolv.conf",
             "/etc/resolv.conf",
-        ]
+        ],
+        sudo=True,
     )
-    run(["sudo", "mkdir", "-p", "/etc/iwd"])
+    run(["mkdir", "-p", "/etc/iwd"], sudo=True)
     write_file_sudo("/etc/iwd/main.conf", IWD_CONFIG)
 
 
@@ -74,31 +74,32 @@ def _configure_ufw(config: Config) -> None:
         return
 
     section("[System/Security] Configuring ufw...")
-    run("sudo ufw default deny incoming")
-    run("sudo ufw default allow outgoing")
+    run("ufw default deny incoming", sudo=True)
+    run("ufw default allow outgoing", sudo=True)
 
     for rule in config.ufw.allow:
         desc = f" ({rule.description})" if rule.description else ""
         print(f"  Allowing {rule.port}/{rule.proto}{desc}")
-        run(["sudo", "ufw", "allow", f"{rule.port}/{rule.proto}"])
+        run(["ufw", "allow", f"{rule.port}/{rule.proto}"], sudo=True)
 
-    run("sudo ufw reload")
-    run("sudo ufw enable")
+    run("ufw reload", sudo=True)
+    run("ufw enable", sudo=True)
 
 
 def _enable_services(config: Config) -> None:
     if not config.services.enable:
         return
     section("[System] Enabling services...")
-    run(["sudo", "systemctl", "enable", *config.services.enable])
+    run(["systemctl", "enable", *config.services.enable], sudo=True)
 
 
 def _disable_services(config: Config) -> None:
     section("[System] Disabling unused services...")
     if config.services.disable:
         run(
-            ["sudo", "systemctl", "disable", *config.services.disable],
+            ["systemctl", "disable", *config.services.disable],
             check=False,
+            sudo=True,
         )
     if config.services.mask:
-        run(["sudo", "systemctl", "mask", *config.services.mask])
+        run(["systemctl", "mask", *config.services.mask], sudo=True)

@@ -1,7 +1,6 @@
 [bootstrap]
 description = "Bootstrap configuration"
 mirrors = [
-  "Belarus",
   "Russia",
   "Ukraine",
   "Poland",

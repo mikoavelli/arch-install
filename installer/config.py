@@ -3,6 +3,7 @@ from __future__ import annotations
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import cast
 
 
 @dataclass
@@ -152,95 +153,102 @@ def load_config(path: Path | None = None) -> Config:
         path = Path(__file__).parent.parent / "config.toml"
 
     with path.open("rb") as f:
-        data = tomllib.load(f)
+        data: dict[str, object] = tomllib.load(f)
 
     # Parse bootstrap
-    bootstrap_data = data.get("bootstrap", {})
+    bootstrap_data = cast("dict[str, object]", data.get("bootstrap", {}))
+    bootstrap_packages_raw = cast("list[dict[str, object]]", bootstrap_data.get("packages", []))
     bootstrap_packages = [
         Package(
-            name=p["name"],
-            description=p.get("description", ""),
+            name=str(p["name"]),
+            description=str(p.get("description", "")),
         )
-        for p in bootstrap_data.get("packages", [])
+        for p in bootstrap_packages_raw
     ]
     bootstrap = BootstrapConfig(
-        description=bootstrap_data.get("description", ""),
-        mirrors=bootstrap_data.get("mirrors", []),
+        description=str(bootstrap_data.get("description", "")),
+        mirrors=cast("list[str]", bootstrap_data.get("mirrors", [])),
         packages=bootstrap_packages,
     )
 
     # Parse package groups
     groups: dict[str, PackageGroup] = {}
-    for group_name, group_data in data.get("packages", {}).items():
+    packages_data_raw = cast("dict[str, dict[str, object]]", data.get("packages", {}))
+    for group_name, group_data in packages_data_raw.items():
+        group_name_str = str(group_name)
+        packages_raw = cast("list[dict[str, object]]", group_data.get("packages", []))
         packages = [
             Package(
-                name=p["name"],
-                description=p.get("description", ""),
-                version=p.get("version", ""),
-                env=p.get("env", {}),
-                fs=p.get("fs", []),
+                name=str(p["name"]),
+                description=str(p.get("description", "")),
+                version=str(p.get("version", "")),
+                env=cast("dict[str, str]", p.get("env", {})),
+                fs=cast("list[str]", p.get("fs", [])),
             )
-            for p in group_data.get("packages", [])
+            for p in packages_raw
         ]
-        groups[group_name] = PackageGroup(
-            name=group_name,
-            description=group_data.get("description", ""),
+        groups[group_name_str] = PackageGroup(
+            name=group_name_str,
+            description=str(group_data.get("description", "")),
             packages=packages,
         )
 
     # Parse services
-    services_data = data.get("services", {})
+    services_data = cast("dict[str, object]", data.get("services", {}))
     services = Services(
-        enable=services_data.get("enable", []),
-        disable=services_data.get("disable", []),
-        mask=services_data.get("mask", []),
+        enable=cast("list[str]", services_data.get("enable", [])),
+        disable=cast("list[str]", services_data.get("disable", [])),
+        mask=cast("list[str]", services_data.get("mask", [])),
     )
 
     # Parse UFW config
-    ufw_data = data.get("ufw", {})
+    ufw_data = cast("dict[str, object]", data.get("ufw", {}))
+    ufw_rules_raw = cast("list[dict[str, object]]", ufw_data.get("allow", []))
     ufw_rules = [
         UfwRule(
-            port=rule["port"],
-            proto=rule["proto"],
-            description=rule.get("description", ""),
+            port=cast("int", rule["port"]),
+            proto=str(rule["proto"]),
+            description=str(rule.get("description", "")),
         )
-        for rule in ufw_data.get("allow", [])
+        for rule in ufw_rules_raw
     ]
     ufw = UfwConfig(
-        description=ufw_data.get("description", ""),
+        description=str(ufw_data.get("description", "")),
         allow=ufw_rules,
     )
 
     # Parse Secure Boot config
-    secureboot_data = data.get("secureboot", {})
+    secureboot_data = cast("dict[str, object]", data.get("secureboot", {}))
     secureboot = SecureBootConfig(
-        description=secureboot_data.get("description", ""),
-        sign_targets=secureboot_data.get("sign_targets", []),
+        description=str(secureboot_data.get("description", "")),
+        sign_targets=cast("list[str]", secureboot_data.get("sign_targets", [])),
     )
 
     # Parse Git config
-    git_data = data.get("git", {})
+    git_data = cast("dict[str, object]", data.get("git", {}))
+    git_settings_raw = cast("list[dict[str, object]]", git_data.get("settings", []))
     git_settings = [
         GitSetting(
-            key=s["key"],
-            value=s["value"],
+            key=str(s["key"]),
+            value=str(s["value"]),
         )
-        for s in git_data.get("settings", [])
+        for s in git_settings_raw
     ]
     git = GitConfig(
-        description=git_data.get("description", ""),
+        description=str(git_data.get("description", "")),
         settings=git_settings,
     )
 
     # Parse gschemas
-    gschemas_data = data.get("gschemas", {})
+    gschemas_data = cast("dict[str, object]", data.get("gschemas", {}))
+    gschemas_raw = cast("list[dict[str, object]]", gschemas_data.get("packages", []))
     gschemas = [
         GSchema(
-            schema=g["schema"],
-            key=g["key"],
-            value=g["value"],
+            schema=str(g["schema"]),
+            key=str(g["key"]),
+            value=str(g["value"]),
         )
-        for g in gschemas_data.get("packages", [])
+        for g in gschemas_raw
     ]
 
     return Config(

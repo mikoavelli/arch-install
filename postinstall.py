@@ -12,7 +12,7 @@ from installer.runner import command_exists, run, section
 def prompt(msg: str) -> str:
     try:
         return input(msg).strip()
-    except (KeyboardInterrupt, EOFError):
+    except KeyboardInterrupt, EOFError:
         print()
         sys.exit(0)
 
@@ -77,7 +77,7 @@ def _setup_allowed_signers(email: str) -> None:
         return
 
     with allowed.open("a") as f:
-        f.write(entry + "\n")
+        _ = f.write(entry + "\n")
     print("  Key added to allowed_signers")
 
 
@@ -105,7 +105,7 @@ def _custom_flatpak_overrides() -> None:
         return
 
     section("[Flatpak] Disabling device access to 'org.telegram.desktop' flatpak ")
-    run("sudo flatpak override --nodevice=all org.telegram.desktop")
+    run(["flatpak", "override", "--nodevice=all", "org.telegram.desktop"], sudo=True)
 
 
 def main() -> None:

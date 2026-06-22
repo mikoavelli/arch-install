@@ -10,7 +10,10 @@ Host github.com
   IdentityFile ~/.ssh/github-auth
 """
 
-IDEAPAD_SUDOERS = r"%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee /sys/bus/platform/drivers/ideapad_acpi/VPC????\:??/conservation_mode"
+IDEAPAD_SUDOERS = (
+    r"%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee "
+    r"/sys/bus/platform/drivers/ideapad_acpi/VPC????\:??/conservation_mode"
+)
 
 
 def run_step(config: Config) -> None:
@@ -31,7 +34,7 @@ def _setup_ssh_config() -> None:
         return
 
     with config_file.open("a") as f:
-        f.write(SSH_CONFIG_BLOCK)
+        _ = f.write(SSH_CONFIG_BLOCK)
 
     config_file.chmod(0o600)
 
@@ -43,10 +46,11 @@ def _setup_ideapad() -> None:
     modules_file = Path("/etc/modules")
     content = modules_file.read_text() if modules_file.exists() else ""
     if "ideapad_laptop" not in content:
-        run(
-            ["sudo", "tee", "-a", "/etc/modules"],
+        _ = run(
+            ["tee", "-a", "/etc/modules"],
             input="ideapad_laptop\n",
             capture=True,
+            sudo=True,
         )
 
 

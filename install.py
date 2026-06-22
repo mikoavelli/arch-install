@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from pathlib import Path
 from collections.abc import Callable
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -40,12 +40,8 @@ def main() -> None:
         run("flatpak repair")
 
     print("\n\033[1;32mSetup complete! Please run the following scripts:\033[0m")
-    print(
-        "   1) postinstall.py — from the arch-niri directory for post-installation setup."
-    )
-    print(
-        "   2) stow.sh        — from the dotfiles directory to create symlinks for your configs."
-    )
+    print("   1) postinstall.py — from the arch-niri directory for post-installation setup.")
+    print("   2) stow.sh        — from the dotfiles directory to create symlinks for your configs.")
 
 
 if __name__ == "__main__":
