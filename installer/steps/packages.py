@@ -5,7 +5,8 @@ from installer.runner import command_exists, run, section
 
 
 def run_step(config: Config) -> None:
-    _install_system_packages(config)
+    _install_core_packages(config)
+    _install_aur_packages(config)
     _downgrade_packages(config)
 
     if not (command_exists("flatpak") and config.flatpak_packages()):
@@ -16,10 +17,21 @@ def run_step(config: Config) -> None:
     _configure_flatpaks(config)
 
 
-def _install_system_packages(config: Config) -> None:
-    packages = config.system_packages()
-    section(f"[Packages] Installing {len(packages)} packages via yay...")
+def _install_core_packages(config: Config) -> None:
+    packages = config.core_packages()
+    section(f"[Packages] Installing {len(packages)} core packages...")
     run(["yay", "-S", "--needed", "--noconfirm", *packages])
+
+
+def _install_aur_packages(config: Config) -> None:
+    packages = config.aur_packages()
+    if config.all_downgrade_packages():
+        packages.append("downgrade")
+    if not packages:
+        return
+
+    section(f"[Packages] Installing {len(packages)} AUR packages...")
+    run(["yay", "-S", "--needed", *packages])
 
 
 def _downgrade_packages(config: Config) -> None:
@@ -27,10 +39,6 @@ def _downgrade_packages(config: Config) -> None:
     if not packages:
         section("[Downgrade] No packages to downgrade, skipping")
         return
-
-    if not command_exists("downgrade"):
-        section("[Downgrade] Package 'downgrade' is not installed, installing")
-        run(["yay", "-S", "--noconfirm", "downgrade"])
 
     section(f"[Downgrade] Downgrading {len(packages)} package(s)...")
     for pkg in packages:

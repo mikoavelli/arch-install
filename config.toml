@@ -119,7 +119,6 @@ packages = [
   { name = "nautilus-open-any-terminal-git", description = "Context-menu entry for opening any terminal in Nautilus" },
   { name = "xdg-terminal-exec-git", description = "Proposed standard for launching desktop apps with Terminal=true" },
   { name = "code-marketplace", description = "Enable VSCode marketplace in Code OSS" },
-  { name = "windscribe-cli-v2-bin", description = "Windscribe CLI tool for Linux (build without NetworkManager)" },
 ]
 
 [packages.flatpak]

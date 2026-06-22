@@ -109,13 +109,30 @@ class Config:
         repr=False,
     )
 
-    def system_packages(self) -> list[str]:
+    PACMAN_CORE_GROUPS: tuple[str, ...] = field(
+        default=(
+            "niri_core",
+            "amd_video_drivers",
+            "essential",
+            "lazyvim_deps",
+        ),
+        init=False,
+        repr=False,
+    )
+
+    def core_packages(self) -> list[str]:
         names: list[str] = []
-        for group_name in self.PACMAN_GROUPS:
+        for group_name in self.PACMAN_CORE_GROUPS:
             group = self.groups.get(group_name)
             if group:
                 names.extend(p.name for p in group.regular_packages())
         return names
+
+    def aur_packages(self) -> list[str]:
+        group = self.groups.get("aur")
+        if group:
+            return [p.name for p in group.regular_packages()]
+        return []
 
     def flatpak_packages(self) -> list[Package]:
         group = self.groups.get("flatpak")
