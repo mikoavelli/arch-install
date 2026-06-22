@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+import argparse
 import sys
 from pathlib import Path
+from typing import cast
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import Config, load_config
-from installer.runner import command_exists, run, section
+from installer.runner import command_exists, run, section, style
 
 
 def prompt(msg: str) -> str:
@@ -69,6 +71,10 @@ def _setup_allowed_signers(email: str) -> None:
     sign_pub = Path.home() / ".ssh" / "github-sign.pub"
     allowed = Path.home() / ".ssh" / "allowed_signers"
 
+    if not sign_pub.exists():
+        print("  SSH public key not found, skipping allowed_signers setup")
+        return
+
     pub_key = sign_pub.read_text().strip()
     entry = f"{email} {pub_key}"
 
@@ -109,6 +115,18 @@ def _custom_flatpak_overrides() -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Post-installation setup for Arch Linux: Niri")
+    _ = parser.add_argument(
+        "--dry-run", action="store_true", help="Print commands without executing"
+    )
+    args = parser.parse_args()
+    dry_run = cast("bool", args.dry_run)
+
+    if dry_run:
+        import installer.runner as runner_mod
+
+        runner_mod.DRY_RUN = True
+
     config = load_config()
 
     email = prompt("Enter your email for git config and SSH key: ")
@@ -121,7 +139,7 @@ def main() -> None:
     _setup_rust()
     _custom_flatpak_overrides()
 
-    print("\n\033[0;32mPost-installation complete!\033[0m")
+    print(style("\nPost-installation complete!", "bold", "green"))
 
 
 if __name__ == "__main__":

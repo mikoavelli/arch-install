@@ -8,6 +8,28 @@ from collections.abc import Sequence
 from subprocess import CompletedProcess
 from typing import Literal, overload
 
+DRY_RUN = False
+
+
+_STYLES = {
+    "reset": "0",
+    "bold": "1",
+    "dim": "2",
+    "red": "31",
+    "green": "32",
+    "yellow": "33",
+    "blue": "34",
+    "magenta": "35",
+    "cyan": "36",
+}
+
+
+def style(text: str, *effects: str) -> str:
+    codes = [_STYLES[e] for e in effects if e in _STYLES]
+    if not codes:
+        return text
+    return f"\033[{';'.join(codes)}m{text}\033[0m"
+
 
 class CommandError(Exception):
     pass
@@ -57,7 +79,13 @@ def run(
     if sudo:
         args = ["sudo", *args]
 
-    print(f"$ {shlex.join(args)}", flush=True)
+    if DRY_RUN:
+        print(style(f"$ {shlex.join(args)}", "dim"), flush=True)
+        if capture:
+            return CompletedProcess(args, 0, "", "")
+        return None
+
+    print(style(f"$ {shlex.join(args)}", "bold", "blue"), flush=True)
 
     result = subprocess.run(  # noqa: S603
         args,
@@ -85,4 +113,4 @@ def write_file_sudo(path: str, content: str) -> None:
 
 
 def section(title: str) -> None:
-    print(f"\n\033[1;34m-> {title}\033[0m", flush=True)
+    print(style(f"\n-> {title}", "bold", "green"), flush=True)

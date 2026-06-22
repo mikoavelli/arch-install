@@ -30,7 +30,7 @@ def _setup_ssh_config() -> None:
 
     config_file = ssh_dir / "config"
     if config_file.exists() and "Host github.com" in config_file.read_text():
-        print("  SSH config already contains github.com entry, skipping")
+        print("# SSH config already contains github.com entry, skipping")
         return
 
     with config_file.open("a") as f:

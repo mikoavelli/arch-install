@@ -1,7 +1,7 @@
 import sys
 
 from installer.config import Config
-from installer.runner import command_exists, run, section
+from installer.runner import command_exists, run, section, style
 
 
 def run_step(config: Config) -> None:
@@ -21,4 +21,4 @@ def run_step(config: Config) -> None:
     result = run("sbctl enroll-keys", check=False, capture=True, sudo=True)
 
     if result.returncode != 0 and result.stderr:
-        print(f"\033[1;33m{result.stderr}\033[0m", file=sys.stderr, end="")
+        print(style(result.stderr, "bold", "yellow"), file=sys.stderr, end="")

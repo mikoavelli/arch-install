@@ -79,7 +79,7 @@ def _configure_ufw(config: Config) -> None:
 
     for rule in config.ufw.allow:
         desc = f" ({rule.description})" if rule.description else ""
-        print(f"  Allowing {rule.port}/{rule.proto}{desc}")
+        print(f"# Allowing {rule.port}/{rule.proto}{desc}")
         run(["ufw", "allow", f"{rule.port}/{rule.proto}"], sudo=True)
 
     run("ufw reload", sudo=True)
