@@ -1,13 +1,6 @@
 [bootstrap]
 description = "Bootstrap configuration"
-mirrors = [
-  "Russia",
-  "Ukraine",
-  "Poland",
-  "Lithuania",
-  "Latvia",
-  "Estonia",
-]
+mirrors = ["Russia", "Ukraine", "Poland", "Lithuania", "Latvia", "Estonia"]
 # Also will be installed in bootstrap:
 # { name = "git", description = "The fast distributed version control system" },
 # { name = "reflector", description = "Script to retrieve and filter the latest Pacman mirror list" },
@@ -79,6 +72,7 @@ packages = [
   { name = "gst-plugins-ugly", description = "Multimedia graph framework - ugly plugins" },
   { name = "gst-plugins-good", description = "Multimedia graph framework - good plugins" },
   { name = "lazygit", description = "Simple terminal UI for git commands" },
+  { name = "jq", description = "Command-line JSON processor" },
   { name = "loupe", description = "A simple image viewer for GNOME" },
   { name = "papers", description = "Document viewer for PDF and other document formats" },
   { name = "less", description = "A terminal based program for viewing text files" },
@@ -98,13 +92,11 @@ packages = [
 ]
 
 [packages.lazyvim_deps]
-description = "LazyVim / Neovim dependencies"
+description = "Neovim dependencies"
 packages = [
-  { name = "curl", description = "Command line tool for transferring data with URLs" },
   { name = "fd", description = "Simple, fast and user-friendly alternative to find" },
   { name = "fzf", description = "Command-line fuzzy finder" },
   { name = "gcc", description = "The GNU Compiler Collection - C and C++ frontends" },
-  { name = "luarocks", description = "Deployment and management system for Lua modules" },
   { name = "make", description = "GNU make utility to maintain groups of programs" },
   { name = "neovim", description = "Fork of Vim aiming to improve user experience, plugins, and GUIs" },
   { name = "ripgrep", description = "A search tool combining usability of ag with speed of grep" },

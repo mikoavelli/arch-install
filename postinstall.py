@@ -19,7 +19,7 @@ def prompt(msg: str) -> str:
         sys.exit(0)
 
 
-def _create_ssh_keys(email: str) -> None:
+def _create_ssh_keys() -> None:
     section("[SSH] Creating SSH keys for GitHub...")
 
     ssh_dir = Path.home() / ".ssh"
@@ -36,7 +36,7 @@ def _create_ssh_keys(email: str) -> None:
                 "-t",
                 "ed25519",
                 "-C",
-                email,
+                "",
                 "-f",
                 str(key_path),
                 "-N",
@@ -129,10 +129,11 @@ def main() -> None:
 
     config = load_config()
 
-    email = prompt("Enter your email for git config and SSH key: ")
-    name = prompt("Enter your name for git config: ")
+    github_id = prompt("Enter your GitHub ID (numeric, from profile URL): ")
+    name = prompt("Enter your username for git config: ")
+    email = f"{github_id}+{name}@users.noreply.github.com"
 
-    _create_ssh_keys(email)
+    _create_ssh_keys()
     _configure_git(config, email, name)
     _setup_allowed_signers(email)
     _update_tldr()
