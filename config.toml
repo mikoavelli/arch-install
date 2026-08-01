@@ -54,6 +54,7 @@ description = "Essential system and user packages"
 packages = [
   { name = "adw-gtk-theme", description = "Unofficial GTK 3 port of the libadwaita theme" },
   { name = "bash-completion", description = "Programmable completion for the bash shell" },
+  { name = "bat", description = "Cat clone with syntax highlighting and git integration" },
   { name = "btop", description = "A monitor of system resources, bpytop ported to C++" },
   { name = "code", description = "The Open Source build of Visual Studio Code editor" },
   { name = "wget", description = "Network utility to retrieve files from the web" },
@@ -89,6 +90,8 @@ packages = [
   { name = "gamescope", description = "SteamOS session compositing window manager" },
   { name = "steam", description = "Valve's digital software delivery system" },
   { name = "cloc", description = "Count lines of code" },
+  { name = "zellij", description = "A terminal multiplexer" },
+  { name = "pwgen", description = "Password generator for creating easily memorable passwords" },
 ]
 
 [packages.lazyvim_deps]
