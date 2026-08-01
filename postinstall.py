@@ -15,8 +15,8 @@ def prompt(msg: str) -> str:
     try:
         return input(msg).strip()
     except KeyboardInterrupt, EOFError:
-        print()
-        sys.exit(0)
+        print(style("\n\nPost-installation cancelled by user.", "bold", "yellow"), file=sys.stderr)
+        sys.exit(130)
 
 
 def _create_ssh_keys() -> None:
@@ -115,7 +115,7 @@ def _custom_flatpak_overrides() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Post-installation setup for Arch Linux: Niri")
+    parser = argparse.ArgumentParser(description="Post-installation setup for Arch Linux")
     _ = parser.add_argument(
         "--dry-run", action="store_true", help="Print commands without executing"
     )
@@ -127,20 +127,24 @@ def main() -> None:
 
         runner_mod.DRY_RUN = True
 
-    config = load_config()
+    try:
+        config = load_config()
 
-    github_id = prompt("Enter your GitHub ID (numeric, from profile URL): ")
-    name = prompt("Enter your username for git config: ")
-    email = f"{github_id}+{name}@users.noreply.github.com"
+        github_id = prompt("Enter your GitHub ID (numeric, from profile URL): ")
+        name = prompt("Enter your username for git config: ")
+        email = f"{github_id}+{name}@users.noreply.github.com"
 
-    _create_ssh_keys()
-    _configure_git(config, email, name)
-    _setup_allowed_signers(email)
-    _update_tldr()
-    _setup_rust()
-    _custom_flatpak_overrides()
+        _create_ssh_keys()
+        _configure_git(config, email, name)
+        _setup_allowed_signers(email)
+        _update_tldr()
+        _setup_rust()
+        _custom_flatpak_overrides()
 
-    print(style("\nPost-installation complete!", "bold", "green"))
+        print(style("\nPost-installation complete!", "bold", "green"))
+    except KeyboardInterrupt:
+        print(style("\nPost-installation cancelled by user.", "bold", "yellow"), file=sys.stderr)
+        sys.exit(130)
 
 
 if __name__ == "__main__":

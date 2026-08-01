@@ -98,34 +98,10 @@ class Config:
     git: GitConfig
     gschemas: list[GSchema]
 
-    PACMAN_GROUPS: tuple[str, ...] = field(
-        default=(
-            "niri_core",
-            "amd_video_drivers",
-            "essential",
-            "lazyvim_deps",
-            "aur",
-        ),
-        init=False,
-        repr=False,
-    )
-
-    PACMAN_CORE_GROUPS: tuple[str, ...] = field(
-        default=(
-            "niri_core",
-            "amd_video_drivers",
-            "essential",
-            "lazyvim_deps",
-        ),
-        init=False,
-        repr=False,
-    )
-
     def core_packages(self) -> list[str]:
         names: list[str] = []
-        for group_name in self.PACMAN_CORE_GROUPS:
-            group = self.groups.get(group_name)
-            if group:
+        for group_name, group in self.groups.items():
+            if group_name not in ("aur", "flatpak"):
                 names.extend(p.name for p in group.regular_packages())
         return names
 
@@ -141,9 +117,8 @@ class Config:
 
     def all_downgrade_packages(self) -> list[Package]:
         packages: list[Package] = []
-        for group_name in self.PACMAN_GROUPS:
-            group = self.groups.get(group_name)
-            if group:
+        for group_name, group in self.groups.items():
+            if group_name != "flatpak":
                 packages.extend(group.downgrade_packages())
         return packages
 
