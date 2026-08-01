@@ -1,11 +1,11 @@
 [project]
-name = "arch-niri"
+name = "arch-install"
 version = "0.1.0"
-description = "Arch Linux: Niri installation scripts"
+description = "Arch Linux Installation & Post-Configuration Scripts"
 requires-python = ">=3.14"
 
 [dependency-groups]
-dev = ["ruff>=0.11", "mypy>=1.15", "basedpyright>=1.29"]
+dev = ["ruff>=0.15", "mypy>=2.3", "basedpyright>=1.39"]
 
 [tool.ruff]
 line-length = 100
