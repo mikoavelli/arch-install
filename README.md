@@ -14,21 +14,22 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
   - Reserved package group keys:
     - `aur`: Reserved for AUR packages via `yay` to apply specific build rules and flags (e.g., enabling PKGBUILD inspection).
     - `flatpak`: Reserved for Flathub packages.
-  - Updates mirrorlists using `reflector` and synchronizes package databases.
+  - Updates mirrorlists using `reflector` (can be skipped with `--skip-mirrors`) and synchronizes package databases.
   - Installs core packages and builds `yay` automatically if not present.
   - Supports version-locked package downgrades via `downgrade`.
-  - Installs Flatpak applications from Flathub with environment and filesystem overrides.
+  - Installs Flatpak applications from Flathub with environment, filesystem, and device overrides.
 - **System Configuration**:
   - Configures incoming/outgoing UFW firewall rules.
   - Enables, disables, or masks systemd services and targets.
   - Configures `iwd` network management with `systemd-resolved`.
+  - Configures security parameters.
+  - Configures Sudoers rules for hardware features.
   - Applies sysctl adjustments.
   - Silences PC speaker beeps and hides the systemd-boot menu.
 - **Secure Boot**: Key generation, binary signing (`vmlinuz-linux`, `systemd-boot`, EFI files), and key enrollment via `sbctl`.
 - **User Setup**:
   - SSH key creation (`github-sign`, `github-auth`) and SSH config generation.
   - Configures `allowed_signers` for SSH-based Git commit signing.
-  - Configures Sudoers rules for hardware features.
   - Applies interface theme and font preferences using `gsettings`.
 - **Safety & Error Handling**:
   - Full support for `--dry-run` to preview commands without modifying the system.
@@ -42,7 +43,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
 .
 ├── config.toml           # Configuration file for packages, services, and preferences
 ├── install.py            # Main installation script (system-level setup)
-├── postinstall.py        # Post-installation script (user keys, Git config, Rust)
+├── postinstall.py        # Post-installation script (SSH keys, Git config, GSettings, Rust)
 ├── installer/
 │   ├── config.py         # TOML parsing logic and data models
 │   ├── runner.py         # Subprocess execution helper with dry-run support
@@ -50,8 +51,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
 │       ├── bootstrap.py  # Reflector mirror update and pacman setup
 │       ├── yay.py        # AUR helper installer
 │       ├── packages.py   # Pacman, AUR, downgrade, and Flatpak installer
-│       ├── system.py     # Systemd services, firewall, sysctl, and network setup
-│       ├── user.py       # SSH config, hardware rules, and GSettings
+│       ├── system.py     # Systemd services, firewall, sysctl, faillock, network and hardware rules
 │       └── secureboot.py # sbctl key generation and signing steps
 ├── pyproject.toml        # Development and linting configuration
 └── .gitignore
@@ -103,7 +103,7 @@ python3 install.py
 
 ### 5. Run Post-Installation Setup
 
-Execute the post-installation script to generate SSH keys, configure Git signing, setup Rust, and apply Flatpak overrides:
+Execute the post-installation script to generate SSH keys, configure Git signing, apply GSettings preferences, setup Rust:
 
 ```bash
 python3 postinstall.py
