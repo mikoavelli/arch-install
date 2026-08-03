@@ -10,6 +10,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 from installer.config import Config, load_config
 from installer.runner import command_exists, run, section, style
 
+SSH_CONFIG_BLOCK = """\
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github-auth
+"""
+
 
 def prompt(msg: str) -> str:
     try:
@@ -19,8 +26,8 @@ def prompt(msg: str) -> str:
         sys.exit(130)
 
 
-def _create_ssh_keys() -> None:
-    section("[SSH] Creating SSH keys for GitHub...")
+def _setup_ssh() -> None:
+    section("[SSH] Setting up SSH keys and config for GitHub...")
 
     ssh_dir = Path.home() / ".ssh"
     ssh_dir.mkdir(mode=0o700, exist_ok=True)
@@ -44,25 +51,14 @@ def _create_ssh_keys() -> None:
             ]
         )
 
-
-def _configure_git(config: Config, email: str, name: str) -> None:
-    section("[Git] Base git configuration...")
-
-    sign_key = str(Path.home() / ".ssh" / "github-sign.pub")
-    allowed = str(Path.home() / ".ssh" / "allowed_signers")
-
-    placeholders = {
-        "{email}": email,
-        "{name}": name,
-        "{sign_key}": sign_key,
-        "{allowed}": allowed,
-    }
-
-    for setting in config.git.settings:
-        value = setting.value
-        for placeholder, replacement in placeholders.items():
-            value = value.replace(placeholder, replacement)
-        run(["git", "config", "set", "--global", setting.key, value])
+    config_file = ssh_dir / "config"
+    if config_file.exists() and "Host github.com" in config_file.read_text():
+        print("  SSH config already contains github.com entry, skipping")
+    else:
+        with config_file.open("a") as f:
+            _ = f.write(SSH_CONFIG_BLOCK)
+        config_file.chmod(0o600)
+        print("  SSH config updated for github.com")
 
 
 def _setup_allowed_signers(email: str) -> None:
@@ -85,6 +81,26 @@ def _setup_allowed_signers(email: str) -> None:
     with allowed.open("a") as f:
         _ = f.write(entry + "\n")
     print("  Key added to allowed_signers")
+
+
+def _configure_git(config: Config, email: str, name: str) -> None:
+    section("[Git] Configuring global git settings...")
+
+    sign_key = str(Path.home() / ".ssh" / "github-sign.pub")
+    allowed = str(Path.home() / ".ssh" / "allowed_signers")
+
+    placeholders = {
+        "{email}": email,
+        "{name}": name,
+        "{sign_key}": sign_key,
+        "{allowed}": allowed,
+    }
+
+    for setting in config.git.settings:
+        value = setting.value
+        for placeholder, replacement in placeholders.items():
+            value = value.replace(placeholder, replacement)
+        run(["git", "config", "set", "--global", setting.key, value])
 
 
 def _update_tldr() -> None:
@@ -125,9 +141,9 @@ def main() -> None:
         name = prompt("Enter your username for git config: ")
         email = f"{github_id}+{name}@users.noreply.github.com"
 
-        _create_ssh_keys()
-        _configure_git(config, email, name)
+        _setup_ssh()
         _setup_allowed_signers(email)
+        _configure_git(config, email, name)
         _update_tldr()
         _setup_rust()
 
