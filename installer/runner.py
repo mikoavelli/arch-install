@@ -128,6 +128,7 @@ def replace_in_file_sudo(
         return
 
     if not p.exists():
+        print(f"# File {path_str} does not exist, skipping replacement")
         return
 
     try:
@@ -139,6 +140,8 @@ def replace_in_file_sudo(
     new_content = re.sub(pattern, replacement, content, flags=flags)
     if new_content != content:
         write_file_sudo(path_str, new_content)
+    else:
+        print(f"# No changes needed in {path_str}, skipping")
 
 
 def section(title: str) -> None:

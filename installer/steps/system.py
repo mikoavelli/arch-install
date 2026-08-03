@@ -83,7 +83,7 @@ def _configure_faillock() -> None:
     section("[System/Security] Configuring faillock deny threshold...")
     replace_in_file_sudo(
         "/etc/security/faillock.conf",
-        r"(?m)^#?\s*deny\s*=.*",
+        r"(?m)^#?\s*deny\s*=\s*\d+.*$",
         "deny = 10",
     )
 
