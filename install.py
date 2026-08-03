@@ -18,8 +18,12 @@ def main() -> None:
     _ = parser.add_argument(
         "--dry-run", action="store_true", help="Print commands without executing"
     )
+    _ = parser.add_argument(
+        "--skip-mirrors", action="store_true", help="Skip mirrorlist update using reflector"
+    )
     args = parser.parse_args()
     dry_run = cast("bool", args.dry_run)
+    skip_mirrors = cast("bool", args.skip_mirrors)
 
     if dry_run:
         import installer.runner as runner_mod
@@ -30,7 +34,7 @@ def main() -> None:
     config = load_config()
 
     steps: list[tuple[str, Callable[[], None]]] = [
-        ("Bootstrap", lambda: bootstrap.run_step(config)),
+        ("Bootstrap", lambda: bootstrap.run_step(config, skip_mirrors=skip_mirrors)),
         ("Yay", lambda: yay.run_step()),
         ("Packages", lambda: packages.run_step(config)),
         ("System", lambda: system.run_step(config)),
