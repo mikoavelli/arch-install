@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from installer.config import Config
 from installer.runner import command_exists, replace_in_file_sudo, run, section, write_file_sudo
 
@@ -9,6 +11,11 @@ EnableNetworkConfiguration=true
 NameResolvingService=systemd
 """
 
+IDEAPAD_SUDOERS = (
+    r"%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee "
+    r"/sys/bus/platform/drivers/ideapad_acpi/VPC????\:??/conservation_mode"
+)
+
 
 def run_step(config: Config) -> None:
     _set_ttl()
@@ -17,6 +24,7 @@ def run_step(config: Config) -> None:
     _disable_beep()
     _configure_iwd()
     _configure_faillock()
+    _setup_ideapad()
     _configure_ufw(config)
     _enable_services(config)
     _disable_services(config)
@@ -76,6 +84,21 @@ def _configure_faillock() -> None:
         r"(?m)^#?\s*deny\s*=.*",
         "deny = 10",
     )
+
+
+def _setup_ideapad() -> None:
+    section("[User] Setting up ideapad sudoers rule...")
+    write_file_sudo("/etc/sudoers.d/ideapad", IDEAPAD_SUDOERS)
+
+    modules_file = Path("/etc/modules")
+    content = modules_file.read_text() if modules_file.exists() else ""
+    if "ideapad_laptop" not in content:
+        _ = run(
+            ["tee", "-a", "/etc/modules"],
+            input="ideapad_laptop\n",
+            capture=True,
+            sudo=True,
+        )
 
 
 def _configure_ufw(config: Config) -> None:

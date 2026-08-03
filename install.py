@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import load_config
 from installer.runner import CommandError, command_exists, run, section, style
-from installer.steps import bootstrap, packages, secureboot, system, user, yay
+from installer.steps import bootstrap, packages, secureboot, system, yay
 
 
 def main() -> None:
@@ -38,7 +38,6 @@ def main() -> None:
         ("Yay", lambda: yay.run_step()),
         ("Packages", lambda: packages.run_step(config)),
         ("System", lambda: system.run_step(config)),
-        ("User", lambda: user.run_step(config)),
         ("Secure Boot", lambda: secureboot.run_step(config)),
     ]
 

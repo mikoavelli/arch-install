@@ -103,6 +103,19 @@ def _configure_git(config: Config, email: str, name: str) -> None:
         run(["git", "config", "set", "--global", setting.key, value])
 
 
+def _apply_gsettings(config: Config) -> None:
+    if not command_exists("gsettings"):
+        section("[User/Gsettings] Command 'gsettings' is not found, skipping")
+        return
+
+    if not config.gschemas:
+        return
+
+    section("[User/Gsettings] Applying gsettings...")
+    for g in config.gschemas:
+        run(["gsettings", "set", g.schema, g.key, g.value])
+
+
 def _update_tldr() -> None:
     if not command_exists("tldr"):
         section("[TLDR] Command 'tldr' is not found, skipping")
@@ -144,6 +157,7 @@ def main() -> None:
         _setup_ssh()
         _setup_allowed_signers(email)
         _configure_git(config, email, name)
+        _apply_gsettings(config)
         _update_tldr()
         _setup_rust()
 
