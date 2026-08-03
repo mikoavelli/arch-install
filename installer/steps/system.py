@@ -1,5 +1,5 @@
 from installer.config import Config
-from installer.runner import command_exists, run, section, write_file_sudo
+from installer.runner import command_exists, replace_in_file_sudo, run, section, write_file_sudo
 
 IWD_CONFIG = """\
 [General]
@@ -16,6 +16,7 @@ def run_step(config: Config) -> None:
     _bootloader()
     _disable_beep()
     _configure_iwd()
+    _configure_faillock()
     _configure_ufw(config)
     _enable_services(config)
     _disable_services(config)
@@ -66,6 +67,15 @@ def _configure_iwd() -> None:
     )
     run(["mkdir", "-p", "/etc/iwd"], sudo=True)
     write_file_sudo("/etc/iwd/main.conf", IWD_CONFIG)
+
+
+def _configure_faillock() -> None:
+    section("[System/Security] Configuring faillock deny threshold...")
+    replace_in_file_sudo(
+        "/etc/security/faillock.conf",
+        r"(?m)^#?\s*deny\s*=.*",
+        "deny = 10",
+    )
 
 
 def _configure_ufw(config: Config) -> None:

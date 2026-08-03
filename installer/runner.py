@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import re
 import shlex
 import shutil
 import subprocess
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 from subprocess import CompletedProcess
 from typing import Literal, overload
 
@@ -110,6 +112,33 @@ def command_exists(name: str) -> bool:
 
 def write_file_sudo(path: str, content: str) -> None:
     _ = run(["tee", path], input=content, capture=True, sudo=True)
+
+
+def replace_in_file_sudo(
+    path: str | Path,
+    pattern: str | re.Pattern[str],
+    replacement: str,
+    flags: int | re.RegexFlag = re.MULTILINE,
+) -> None:
+    path_str = str(path)
+    p = Path(path)
+
+    if DRY_RUN:
+        print(style(f"$ replace in {path_str}: '{pattern}' -> '{replacement}'", "dim"), flush=True)
+        return
+
+    if not p.exists():
+        return
+
+    try:
+        content = p.read_text()
+    except PermissionError:
+        res = run(["cat", path_str], capture=True, sudo=True)
+        content = res.stdout
+
+    new_content = re.sub(pattern, replacement, content, flags=flags)
+    if new_content != content:
+        write_file_sudo(path_str, new_content)
 
 
 def section(title: str) -> None:
