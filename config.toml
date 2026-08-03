@@ -115,6 +115,11 @@ packages = [
   { name = "code-marketplace", description = "Enable VSCode marketplace in Code OSS" },
 ]
 
+# Flatpak packages support optional override parameters:
+# - `env`: Environment variables table, e.g. env = { QT_SCALE_FACTOR = "1.25" }
+# - `fs`: Filesystem paths list to allow access, e.g. fs = ["~/Downloads"]
+# - `devices`: Devices permission list. Use "device_name" to allow (--device=)
+#              or "!device_name" to deny (--nodevice=), e.g. devices = ["!all"] or devices = ["dri"]
 [packages.flatpak]
 description = "Flatpak packages from Flathub"
 packages = [
