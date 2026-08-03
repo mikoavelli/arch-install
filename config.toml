@@ -120,6 +120,8 @@ description = "Flatpak packages from Flathub"
 packages = [
   { name = "org.telegram.desktop", description = "Official Telegram Desktop client", fs = [
     "~/Downloads",
+  ], devices = [
+    "!all",
   ] },
   { name = "org.videolan.VLC", description = "Free and open source multimedia player", env = { QT_SCALE_FACTOR = "1.25" } },
   { name = "com.obsproject.Studio", description = "Free software for live streaming and recording", env = { QT_SCALE_FACTOR = "1.25" } },

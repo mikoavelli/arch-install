@@ -13,6 +13,7 @@ class Package:
     version: str = ""
     env: dict[str, str] = field(default_factory=dict)
     fs: list[str] = field(default_factory=list)
+    devices: list[str] = field(default_factory=list)
 
     @property
     def needs_downgrade(self) -> bool:
@@ -159,6 +160,7 @@ def load_config(path: Path | None = None) -> Config:
                 version=str(p.get("version", "")),
                 env=cast("dict[str, str]", p.get("env", {})),
                 fs=cast("list[str]", p.get("fs", [])),
+                devices=cast("list[str]", p.get("devices", [])),
             )
             for p in packages_raw
         ]

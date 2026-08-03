@@ -77,3 +77,9 @@ def _configure_flatpaks(config: Config) -> None:
         for path in pkg.fs:
             expanded = str(Path(path).expanduser())
             run(["flatpak", "override", f"--filesystem={expanded}", pkg.name], sudo=True)
+
+        for dev in pkg.devices:
+            if dev.startswith("!"):
+                run(["flatpak", "override", f"--nodevice={dev[1:]}", pkg.name], sudo=True)
+            else:
+                run(["flatpak", "override", f"--device={dev}", pkg.name], sudo=True)

@@ -105,15 +105,6 @@ def _setup_rust() -> None:
     run("rustup default stable")
 
 
-def _custom_flatpak_overrides() -> None:
-    if not command_exists("org.telegram.desktop"):
-        section("[Flatpak] Flatpak 'org.telegram.desktop' is not installed, skipping")
-        return
-
-    section("[Flatpak] Disabling device access to 'org.telegram.desktop' flatpak ")
-    run(["flatpak", "override", "--nodevice=all", "org.telegram.desktop"], sudo=True)
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Post-installation setup for Arch Linux")
     _ = parser.add_argument(
@@ -139,7 +130,6 @@ def main() -> None:
         _setup_allowed_signers(email)
         _update_tldr()
         _setup_rust()
-        _custom_flatpak_overrides()
 
         print(style("\nPost-installation complete!", "bold", "green"))
     except KeyboardInterrupt:
