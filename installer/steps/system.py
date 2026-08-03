@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from installer.config import Config
@@ -24,6 +25,7 @@ def run_step(config: Config) -> None:
     _disable_beep()
     _configure_iwd()
     _configure_faillock()
+    _configure_locale(config)
     _setup_ideapad()
     _configure_ufw(config)
     _enable_services(config)
@@ -84,6 +86,27 @@ def _configure_faillock() -> None:
         r"(?m)^#?\s*deny\s*=.*",
         "deny = 10",
     )
+
+
+def _configure_locale(config: Config) -> None:
+    if not config.locale.gen and not config.locale.conf:
+        return
+
+    section("[System/Locale] Configuring system locales...")
+
+    if config.locale.gen:
+        for loc in config.locale.gen:
+            escaped_loc = re.escape(loc)
+            replace_in_file_sudo(
+                "/etc/locale.gen",
+                rf"(?m)^#\s*({escaped_loc})",
+                r"\1",
+            )
+        run("locale-gen", sudo=True)
+
+    if config.locale.conf:
+        locale_content = "\n".join(config.locale.conf) + "\n"
+        write_file_sudo("/etc/locale.conf", locale_content)
 
 
 def _setup_ideapad() -> None:

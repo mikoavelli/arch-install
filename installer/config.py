@@ -71,6 +71,13 @@ class SecureBootConfig:
 
 
 @dataclass
+class LocaleConfig:
+    description: str
+    gen: list[str]
+    conf: list[str]
+
+
+@dataclass
 class GitSetting:
     key: str
     value: str
@@ -96,6 +103,7 @@ class Config:
     services: Services
     ufw: UfwConfig
     secureboot: SecureBootConfig
+    locale: LocaleConfig
     git: GitConfig
     gschemas: list[GSchema]
 
@@ -201,6 +209,14 @@ def load_config(path: Path | None = None) -> Config:
         sign_targets=cast("list[str]", secureboot_data.get("sign_targets", [])),
     )
 
+    # Parse Locale config
+    locale_data = cast("dict[str, object]", data.get("locale", {}))
+    locale = LocaleConfig(
+        description=str(locale_data.get("description", "")),
+        gen=cast("list[str]", locale_data.get("gen", [])),
+        conf=cast("list[str]", locale_data.get("conf", [])),
+    )
+
     # Parse Git config
     git_data = cast("dict[str, object]", data.get("git", {}))
     git_settings_raw = cast("list[dict[str, object]]", git_data.get("settings", []))
@@ -234,6 +250,7 @@ def load_config(path: Path | None = None) -> Config:
         services=services,
         ufw=ufw,
         secureboot=secureboot,
+        locale=locale,
         git=git,
         gschemas=gschemas,
     )
