@@ -2,13 +2,13 @@
 
 An automated installation and post-configuration tool for setting up Arch Linux systems using a declarative `config.toml` specification.
 
-Package selections, systemd service states, firewall rules, Secure Boot targets, and desktop settings are dynamically loaded from `config.toml`.
+Package selections, systemd service states, firewall rules, Secure Boot targets, locale configuration, and desktop settings are dynamically loaded from `config.toml`.
 
 ---
 
 ## Features
 
-- **TOML-Based Setup**: Define custom package groups (`[packages.<group_name>]`), service states, firewall rules, and desktop defaults in `config.toml`.
+- **TOML-Based Setup**: Define custom package groups (`[packages.<group_name>]`), service states, firewall rules, system locales, and desktop defaults in `config.toml`.
 - **Dynamic Package Management**:
   - Automatically parses any custom package group key defined in `config.toml` (e.g., core, drivers, fonts, tools) and installs official repository packages automatically without prompting.
   - Reserved package group keys:
@@ -22,6 +22,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
   - Configures incoming/outgoing UFW firewall rules.
   - Enables, disables, or masks systemd services and targets.
   - Configures `iwd` network management with `systemd-resolved`.
+  - Generates system locales in `/etc/locale.gen` and configures localization settings in `/etc/locale.conf`.
   - Configures security parameters.
   - Configures Sudoers rules for hardware features.
   - Applies sysctl adjustments.
@@ -51,7 +52,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
 │       ├── bootstrap.py  # Reflector mirror update and pacman setup
 │       ├── yay.py        # AUR helper installer
 │       ├── packages.py   # Pacman, AUR, downgrade, and Flatpak installer
-│       ├── system.py     # Systemd services, firewall, sysctl, faillock, network and hardware rules
+│       ├── system.py     # Systemd services, firewall, sysctl, faillock, network, locale, and hardware rules
 │       └── secureboot.py # sbctl key generation and signing steps
 ├── pyproject.toml        # Development and linting configuration
 └── .gitignore
@@ -80,6 +81,7 @@ cd arch-install
 
 Review and edit `config.toml` to customize your installation:
 - Adjust mirror countries under `[bootstrap]`.
+- Define system locales and language settings under `[locale]`.
 - Define any package groups under `[packages.<group_name>]` (e.g., `[packages.desktop]`, `[packages.fonts]`, `[packages.tools]`).
 - Enable, disable, or mask systemd units in `[services]`.
 - Define binaries to sign under `[secureboot]`.
@@ -129,6 +131,7 @@ stow .
 | `[services]` | Lists of systemd units to enable, disable, or mask. |
 | `[ufw]` | Port and protocol rules for the UFW firewall. |
 | `[secureboot]` | Target binaries signed using `sbctl`. |
+| `[locale]` | System language, regional formats, and localization generation settings. |
 | `[git]` | Git configuration settings and placeholders. |
 | `[gschemas]` | GSettings schema, key, and value entries. |
 
