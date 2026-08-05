@@ -63,6 +63,16 @@ def _downgrade_packages(config: Config) -> None:
 def _install_flatpak_packages(config: Config) -> None:
     packages = config.flatpak_packages()
     section(f"[Flatpak] Installing {len(packages)} Flatpak packages...")
+    run(
+        [
+            "flatpak",
+            "remote-add",
+            "--if-not-exists",
+            "flathub",
+            "https://dl.flathub.org/repo/flathub.flatpakrepo",
+        ],
+        sudo=True,
+    )
     run(["flatpak", "install", "flathub", "-y", *[p.name for p in packages]])
 
 
