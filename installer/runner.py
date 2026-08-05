@@ -128,7 +128,7 @@ def replace_in_file_sudo(
         return
 
     if not p.exists():
-        print(f"# File {path_str} does not exist, skipping replacement")
+        print(style(f"# File {path_str} does not exist, skipping replacement", "bold", "magenta"))
         return
 
     try:
@@ -141,7 +141,7 @@ def replace_in_file_sudo(
     if new_content != content:
         write_file_sudo(path_str, new_content)
     else:
-        print(f"# No changes needed in {path_str}, skipping")
+        print(style(f"# No changes needed in {path_str}, skipping", "dim", "cyan"))
 
 
 def section(title: str) -> None:

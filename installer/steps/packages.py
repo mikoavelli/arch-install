@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from installer.config import Config
-from installer.runner import command_exists, run, section
+from installer.runner import command_exists, run, section, style
 
 
 def run_step(config: Config) -> None:
@@ -42,7 +42,7 @@ def _downgrade_packages(config: Config) -> None:
 
     section(f"[Downgrade] Downgrading {len(packages)} package(s)...")
     for pkg in packages:
-        print(f"# {pkg.name}{pkg.version}  ({pkg.description})")
+        print(style(f"# {pkg.name}{pkg.version}  ({pkg.description})", "cyan"))
 
     run(
         [

@@ -37,7 +37,7 @@ def _setup_ssh() -> None:
     for key_name in ("github-sign", "github-auth"):
         key_path = ssh_dir / key_name
         if key_path.exists():
-            print(f"  Key {key_path} already exists, skipping")
+            print(style(f"# Key {key_path} already exists, skipping", "dim", "cyan"))
             continue
         run(
             [
@@ -55,7 +55,7 @@ def _setup_ssh() -> None:
 
     config_file = ssh_dir / "config"
     if config_file.exists() and "Host github.com" in config_file.read_text():
-        print("  SSH config already contains github.com entry, skipping")
+        print(style("# SSH config already contains github.com entry, skipping", "dim", "cyan"))
     else:
         _ = run(["tee", "-a", str(config_file)], input=SSH_CONFIG_BLOCK, capture=True)
         run(["chmod", "600", str(config_file)])
@@ -67,8 +67,10 @@ def _setup_allowed_signers(email: str) -> None:
     sign_pub = Path.home() / ".ssh" / "github-sign.pub"
     allowed = Path.home() / ".ssh" / "allowed_signers"
 
-    if not sign_pub.exists():
-        print("  SSH public key not found, skipping allowed_signers setup")
+    if not sign_pub.exists() and not runner_mod.DRY_RUN:
+        print(
+            style("# SSH public key not found, skipping allowed_signers setup", "bold", "magenta")
+        )
         return
 
     if sign_pub.exists():
@@ -79,7 +81,7 @@ def _setup_allowed_signers(email: str) -> None:
     entry = f"{email} {pub_key}"
 
     if allowed.exists() and entry in allowed.read_text():
-        print("  Key already exists in allowed_signers, skipping")
+        print(style("# Key already exists in allowed_signers, skipping", "dim", "cyan"))
         return
 
     _ = run(["tee", "-a", str(allowed)], input=entry + "\n", capture=True)

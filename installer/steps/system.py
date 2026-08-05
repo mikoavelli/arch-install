@@ -2,7 +2,14 @@ import re
 from pathlib import Path
 
 from installer.config import Config
-from installer.runner import command_exists, replace_in_file_sudo, run, section, write_file_sudo
+from installer.runner import (
+    command_exists,
+    replace_in_file_sudo,
+    run,
+    section,
+    style,
+    write_file_sudo,
+)
 
 IWD_CONFIG = """\
 [General]
@@ -135,7 +142,7 @@ def _configure_ufw(config: Config) -> None:
 
     for rule in config.ufw.allow:
         desc = f" ({rule.description})" if rule.description else ""
-        print(f"# Allowing {rule.port}/{rule.proto}{desc}")
+        print(style(f"# Allowing {rule.port}/{rule.proto}{desc}", "cyan"))
         run(["ufw", "allow", f"{rule.port}/{rule.proto}"], sudo=True)
 
     run("ufw reload", sudo=True)
