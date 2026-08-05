@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 from typing import cast
 
+import installer.runner as runner_mod
+
 sys.path.insert(0, str(Path(__file__).parent))
 
 from installer.config import Config, load_config
@@ -30,7 +32,7 @@ def _setup_ssh() -> None:
     section("[SSH] Setting up SSH keys and config for GitHub...")
 
     ssh_dir = Path.home() / ".ssh"
-    ssh_dir.mkdir(mode=0o700, exist_ok=True)
+    run(["mkdir", "-p", "-m", "700", str(ssh_dir)])
 
     for key_name in ("github-sign", "github-auth"):
         key_path = ssh_dir / key_name
@@ -55,10 +57,8 @@ def _setup_ssh() -> None:
     if config_file.exists() and "Host github.com" in config_file.read_text():
         print("  SSH config already contains github.com entry, skipping")
     else:
-        with config_file.open("a") as f:
-            _ = f.write(SSH_CONFIG_BLOCK)
-        config_file.chmod(0o600)
-        print("  SSH config updated for github.com")
+        _ = run(["tee", "-a", str(config_file)], input=SSH_CONFIG_BLOCK, capture=True)
+        run(["chmod", "600", str(config_file)])
 
 
 def _setup_allowed_signers(email: str) -> None:
@@ -71,16 +71,18 @@ def _setup_allowed_signers(email: str) -> None:
         print("  SSH public key not found, skipping allowed_signers setup")
         return
 
-    pub_key = sign_pub.read_text().strip()
+    if sign_pub.exists():
+        pub_key = sign_pub.read_text().strip()
+    else:
+        pub_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI_DRY_RUN_PLACEHOLDER_KEY"
+
     entry = f"{email} {pub_key}"
 
     if allowed.exists() and entry in allowed.read_text():
         print("  Key already exists in allowed_signers, skipping")
         return
 
-    with allowed.open("a") as f:
-        _ = f.write(entry + "\n")
-    print("  Key added to allowed_signers")
+    _ = run(["tee", "-a", str(allowed)], input=entry + "\n", capture=True)
 
 
 def _configure_git(config: Config, email: str, name: str) -> None:
@@ -143,16 +145,19 @@ def main() -> None:
     dry_run = cast("bool", args.dry_run)
 
     if dry_run:
-        import installer.runner as runner_mod
-
         runner_mod.DRY_RUN = True
 
     try:
         config = load_config()
 
-        github_id = prompt("Enter your GitHub ID (numeric, from profile URL): ")
-        name = prompt("Enter your username for git config: ")
-        email = f"{github_id}+{name}@users.noreply.github.com"
+        if dry_run:
+            github_id = "12345"
+            name = "user"
+            email = f"{github_id}+{name}@users.noreply.github.com"
+        else:
+            github_id = prompt("Enter your GitHub ID (numeric, from profile URL): ")
+            name = prompt("Enter your username for git config: ")
+            email = f"{github_id}+{name}@users.noreply.github.com"
 
         _setup_ssh()
         _setup_allowed_signers(email)
