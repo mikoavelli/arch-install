@@ -8,7 +8,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
 
 ## Features
 
-- **TOML-Based Setup**: Define custom package groups (`[packages.<group_name>]`), service states, firewall rules, system locales, and desktop defaults in `config.toml`.
+- **TOML-Based Setup**: Define custom package groups (`[packages.<group_name>]`), service states, firewall rules, system locales, and desktop defaults in `config.toml` (supports custom configs via `-c`/`--config`).
 - **Dynamic Package Management**:
   - Automatically parses any custom package group key defined in `config.toml` (e.g., core, drivers, fonts, tools) and installs official repository packages automatically without prompting.
   - Reserved package group keys:
@@ -34,7 +34,9 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
   - Applies interface theme and font preferences using `gsettings`.
 - **Safety & Error Handling**:
   - Full support for `--dry-run` to preview commands without modifying the system.
-  - Graceful `KeyboardInterrupt` (Ctrl+C) handling across all steps without raw Python tracebacks.
+  - Granular step control via `--step` and `--skip` flags.
+  - Graceful error handling for missing/invalid configuration files and user cancellations (`Ctrl+C`, `EOF`) without raw Python tracebacks.
+  - Root execution guard to prevent `yay` and `makepkg` build failures.
 
 ---
 
@@ -103,6 +105,19 @@ Execute the primary script to perform system initialization, package installatio
 python3 install.py
 ```
 
+#### Advanced Execution Options:
+
+```bash
+# Run only specific steps (bootstrap, yay, packages, system, secureboot)
+python3 install.py --step packages,system
+
+# Skip specific steps
+python3 install.py --skip secureboot
+
+# Use a custom config file
+python3 install.py -c /path/to/custom_config.toml
+```
+
 ### 5. Run Post-Installation Setup
 
 Execute the post-installation script to generate SSH keys, configure Git signing, apply GSettings preferences, setup Rust:
@@ -110,6 +125,8 @@ Execute the post-installation script to generate SSH keys, configure Git signing
 ```bash
 python3 postinstall.py
 ```
+
+*(Optionally pass `-c /path/to/custom_config.toml` to use a custom configuration file).*
 
 ### 6. Link Dotfiles
 
