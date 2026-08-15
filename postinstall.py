@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from typing import cast
@@ -9,7 +10,7 @@ import installer.runner as runner_mod
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from installer.config import Config, load_config
+from installer.config import Config, ConfigError, load_config
 from installer.runner import command_exists, run, section, style
 
 SSH_CONFIG_BLOCK = """\
@@ -139,19 +140,39 @@ def _setup_rust() -> None:
 
 
 def main() -> None:
+    if os.geteuid() == 0:
+        print(
+            style(
+                "Error: Do not run this script directly as root. "
+                + "Run it as a regular user with sudo privileges.",
+                "bold",
+                "red",
+            ),
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(description="Post-installation setup for Arch Linux")
+    _ = parser.add_argument(
+        "-c", "--config", type=Path, default=None, help="Path to custom config TOML file"
+    )
     _ = parser.add_argument(
         "--dry-run", action="store_true", help="Print commands without executing"
     )
     args = parser.parse_args()
+    config_path = cast("Path | None", args.config)
     dry_run = cast("bool", args.dry_run)
 
     if dry_run:
         runner_mod.DRY_RUN = True
 
     try:
-        config = load_config()
+        config = load_config(config_path)
+    except ConfigError as e:
+        print(style(f"Error: {e}", "bold", "red"), file=sys.stderr)
+        sys.exit(1)
 
+    try:
         if dry_run:
             github_id = "12345"
             name = "user"
@@ -169,7 +190,7 @@ def main() -> None:
         _setup_rust()
 
         print(style("\nPost-installation complete!", "bold", "green"))
-    except KeyboardInterrupt:
+    except KeyboardInterrupt, EOFError:
         print(style("\nPost-installation cancelled by user.", "bold", "yellow"), file=sys.stderr)
         sys.exit(130)
 

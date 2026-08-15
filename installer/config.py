@@ -6,6 +6,10 @@ from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
 
 
+class ConfigError(Exception):
+    pass
+
+
 @dataclass
 class Package:
     name: str
@@ -193,9 +197,15 @@ def load_config(path: Path | None = None) -> Config:
     if path is None:
         path = Path(__file__).parent.parent / "config.toml"
 
+    if not path.is_file():
+        raise ConfigError(f"Configuration file not found: '{path}'")
+
     load_fn = typing.cast(typing.Callable[[typing.BinaryIO], dict[str, object]], tomllib.load)
-    with path.open("rb") as f:
-        data = load_fn(f)
+    try:
+        with path.open("rb") as f:
+            data = load_fn(f)
+    except tomllib.TOMLDecodeError as e:
+        raise ConfigError(f"Failed to parse TOML configuration in '{path}': {e}") from e
 
     groups_data = data.pop("packages", {})
     if isinstance(groups_data, dict):

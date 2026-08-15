@@ -3,9 +3,6 @@ from installer.runner import run, section
 
 
 def run_step(config: Config, skip_mirrors: bool = False) -> None:
-    section("[Bootstrap] Synchronizing package databases...")
-    run("pacman -Sy", sudo=True)
-
     packages = [p.name for p in config.bootstrap.packages] + [
         "git",
         "base-devel",
