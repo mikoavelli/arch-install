@@ -147,7 +147,6 @@ uvx ruff check --fix
 uvx ruff format
 
 # Type checking
-uvx mypy .
 uvx basedpyright
 ```
 
