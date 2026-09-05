@@ -130,15 +130,6 @@ def _update_tldr() -> None:
     run("tldr --update")
 
 
-def _setup_rust() -> None:
-    if not command_exists("rustup"):
-        section("[Rust] Package 'rustup' is not installed, skipping")
-        return
-
-    section("[Rust] Installing latest stable toolchain...")
-    run("rustup default stable")
-
-
 def main() -> None:
     if os.geteuid() == 0:
         print(
@@ -187,7 +178,6 @@ def main() -> None:
         _configure_git(config, email, name)
         _apply_gsettings(config)
         _update_tldr()
-        _setup_rust()
 
         print(style("\nPost-installation complete!", "bold", "green"))
     except KeyboardInterrupt, EOFError:
