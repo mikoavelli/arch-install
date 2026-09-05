@@ -20,7 +20,7 @@ def run_step(config: Config) -> None:
 def _install_core_packages(config: Config) -> None:
     packages = config.core_packages()
     section(f"[Packages] Installing {len(packages)} core packages...")
-    run(["yay", "-S", "--needed", "--noconfirm", *packages])
+    run(["pacman", "-S", "--needed", "--noconfirm", *packages], sudo=True)
 
 
 def _install_aur_packages(config: Config) -> None:

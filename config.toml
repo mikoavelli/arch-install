@@ -66,7 +66,6 @@ packages = [
   { name = "fwupd", description = "Simple daemon to allow session software to update firmware" },
   { name = "fzf", description = "Command-line fuzzy finder" },
   { name = "gamescope", description = "SteamOS session compositing window manager" },
-  { name = "gitstatus", description = "Git status for Bash and Zsh prompt" },
   { name = "gnome-disk-utility", description = "Disk Management Utility for GNOME" },
   { name = "gst-plugins-bad", description = "Multimedia graph framework - bad plugins" },
   { name = "gst-plugins-base", description = "Multimedia graph framework - base plugins" },
@@ -99,8 +98,9 @@ packages = [
 description = "AUR packages"
 packages = [
   { name = "code-marketplace", description = "Enable vscode marketplace in Code OSS" },
+  { name = "gitstatus", description = "Git status for Bash and Zsh prompt" },
   { name = "morewaita-icon-theme", description = "An expanded Adwaita-styled companion icon theme with extra icons" },
-  { name = "nautilus-open-any-terminal-git", description = "context-menu entry for opening other terminal in nautilus, git version" },
+  { name = "nautilus-open-any-terminal", description = "context-menu entry for opening other terminal in nautilus" },
   { name = "xdg-terminal-exec-git", description = "Proposed standard to launching desktop apps with Terminal=true" },
 ]
 
@@ -113,9 +113,7 @@ packages = [
 description = "Flatpak packages from Flathub"
 packages = [
   { name = "com.obsproject.Studio", description = "OBS Studio - Live stream and record videos", env = { QT_SCALE_FACTOR = "1.25" } },
-  { name = "org.localsend.localsend_app", description = "An open source cross-platform alternative to AirDrop", fs = [
-    "~",
-  ] },
+  { name = "org.keepassxc.KeePassXC", description = "KeePassXC - Secure and Full-featured Password Manager", env = { QT_SCALE_FACTOR = "1.25", QT_QPA_PLATFORM = "xcb" } },
   { name = "org.telegram.desktop", description = "Telegram - New era of messaging", fs = [
     "~/Downloads",
   ], devices = [
@@ -148,10 +146,7 @@ mask = [
 
 [ufw]
 description = "Firewall port configuration"
-allow = [
-  { port = 53317, proto = "tcp", description = "LocalSend - local file sharing (transfer)" },
-  { port = 53317, proto = "udp", description = "LocalSend - local file sharing (scan)" },
-]
+allow = []
 
 [secureboot]
 description = "Files to sign for Secure Boot"

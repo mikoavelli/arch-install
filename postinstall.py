@@ -121,15 +121,6 @@ def _apply_gsettings(config: Config) -> None:
         run(["gsettings", "set", g.schema, g.key, g.value])
 
 
-def _update_tldr() -> None:
-    if not command_exists("tldr"):
-        section("[TLDR] Command 'tldr' is not found, skipping")
-        return
-
-    section("[TLDR] Downloading cache...")
-    run("tldr --update")
-
-
 def main() -> None:
     if os.geteuid() == 0:
         print(
@@ -177,7 +168,6 @@ def main() -> None:
         _setup_allowed_signers(email)
         _configure_git(config, email, name)
         _apply_gsettings(config)
-        _update_tldr()
 
         print(style("\nPost-installation complete!", "bold", "green"))
     except KeyboardInterrupt, EOFError:
