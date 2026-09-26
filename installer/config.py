@@ -18,6 +18,7 @@ class Package:
     env: dict[str, str] = field(default_factory=dict)
     fs: list[str] = field(default_factory=list)
     devices: list[str] = field(default_factory=list)
+    sockets: list[str] = field(default_factory=list)
 
     @property
     def needs_downgrade(self) -> bool:

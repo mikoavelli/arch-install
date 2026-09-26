@@ -93,3 +93,9 @@ def _configure_flatpaks(config: Config) -> None:
                 run(["flatpak", "override", f"--nodevice={dev[1:]}", pkg.name], sudo=True)
             else:
                 run(["flatpak", "override", f"--device={dev}", pkg.name], sudo=True)
+
+        for sock in pkg.sockets:
+            if sock.startswith("!"):
+                run(["flatpak", "override", f"--nosocket={sock[1:]}", pkg.name], sudo=True)
+            else:
+                run(["flatpak", "override", f"--socket={sock}", pkg.name], sudo=True)

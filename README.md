@@ -17,7 +17,7 @@ Package selections, systemd service states, firewall rules, Secure Boot targets,
   - Updates mirrorlists using `reflector` (can be skipped with `--skip-mirrors`) and synchronizes package databases.
   - Installs core packages and builds `yay` automatically if not present.
   - Supports version-locked package downgrades via `downgrade`.
-  - Installs Flatpak applications from Flathub with environment, filesystem, and device overrides.
+  - Installs Flatpak applications from Flathub with environment, filesystem, device, and socket overrides.
 - **System Configuration**:
   - Configures incoming/outgoing UFW firewall rules.
   - Enables, disables, or masks systemd services and targets.

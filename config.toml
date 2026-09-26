@@ -112,9 +112,15 @@ packages = [
 # - `fs`: Filesystem paths list to allow access, e.g. fs = ["~/Downloads"]
 # - `devices`: Devices permission list. Use "device_name" to allow (--device=)
 #              or "!device_name" to deny (--nodevice=), e.g. devices = ["!all"] or devices = ["dri"]
+# - `sockets`: Sockets permission list. Use "socket_name" to allow (--socket=)
+#              or "!socket_name" to deny (--nosocket=), e.g. sockets = ["x11", "!wayland"]
 [packages.flatpak]
 description = "Flatpak packages from Flathub"
 packages = [
+  { name = "com.discordapp.Discord", description = "Discord - Talk, play, hang out", sockets = [
+    "x11",
+    "!wayland",
+  ], env = { XDG_SESSION_TYPE = "x11" } },
   { name = "com.obsproject.Studio", description = "OBS Studio - Live stream and record videos", env = { QT_SCALE_FACTOR = "1.25" } },
   { name = "org.keepassxc.KeePassXC", description = "KeePassXC - Secure and Full-featured Password Manager", env = { QT_SCALE_FACTOR = "1.25", QT_QPA_PLATFORM = "xcb" } },
   { name = "org.telegram.desktop", description = "Telegram - New era of messaging", fs = [
