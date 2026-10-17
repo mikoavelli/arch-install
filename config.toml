@@ -66,7 +66,6 @@ packages = [
   { name = "ffmpegthumbnailer", description = "Lightweight video thumbnailer that can be used by file managers" },
   { name = "firefox", description = "Fast, Private & Safe Web Browser" },
   { name = "flatpak", description = "Linux application sandboxing and distribution framework (formerly xdg-app)" },
-  { name = "fwupd", description = "Simple daemon to allow session software to update firmware" },
   { name = "fzf", description = "Command-line fuzzy finder" },
   { name = "gamescope", description = "SteamOS session compositing window manager" },
   { name = "gnome-disk-utility", description = "Disk Management Utility for GNOME" },
@@ -199,6 +198,7 @@ settings = [
 description = "Config gschemas"
 packages = [
   { schema = "com.github.stunkymonkey.nautilus-open-any-terminal", key = "terminal", value = "alacritty" },
+  { schema = "com.github.stunkymonkey.nautilus-open-any-terminal", key = "keybindings", value = "<Ctrl>slash" },
   { schema = "org.gnome.desktop.interface", key = "color-scheme", value = "prefer-dark" },
   { schema = "org.gnome.desktop.interface", key = "document-font-name", value = "Inter 12" },
   { schema = "org.gnome.desktop.interface", key = "enable-animations", value = "false" },

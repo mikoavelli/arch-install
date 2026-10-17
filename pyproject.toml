@@ -2,12 +2,12 @@
 name = "arch-install"
 version = "0.1.0"
 description = "Arch Linux Installation & Post-Configuration Scripts"
-requires-python = ">=3.14"
+requires-python = "==3.14.8"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.15",
-    "basedpyright>=1.39",
+    "ruff==0.17.1",
+    "basedpyright==1.40.2",
 ]
 
 [tool.ruff]
