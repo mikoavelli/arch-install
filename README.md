@@ -171,4 +171,4 @@ uvx basedpyright
 
 ## License
 
-This project is open-source and released under the [GNU General Public License v3.0](LICENSE).
+This project is open-source and released under the [MIT License](LICENSE).
