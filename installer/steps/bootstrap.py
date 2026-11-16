@@ -3,11 +3,8 @@ from installer.runner import run, section
 
 
 def run_step(config: Config, skip_mirrors: bool = False) -> None:
-    packages = [p.name for p in config.bootstrap.packages] + [
-        "git",
-        "base-devel",
-        "reflector",
-    ]
+    packages = [p.name for p in config.bootstrap.packages]
+
     section(f"[Bootstrap] Installing {len(packages)} prerequisites...")
     run(["pacman", "-S", "--needed", "--noconfirm", *packages], sudo=True)
 
