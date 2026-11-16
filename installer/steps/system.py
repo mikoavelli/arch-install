@@ -145,6 +145,33 @@ def _configure_ufw(config: Config) -> None:
         print(style(f"# Allowing {rule.port}/{rule.proto}{desc}", "cyan"))
         run(["ufw", "allow", f"{rule.port}/{rule.proto}"], sudo=True)
 
+    for rule in config.ufw.interfaces:
+        desc = f" ({rule.description})" if rule.description else ""
+        msg = f"# ufw {rule.action} {rule.direction} on {rule.interface}{desc}"
+        print(style(msg, "cyan"))
+        run(["ufw", rule.action, rule.direction, "on", rule.interface], sudo=True)
+
+    for rule in config.ufw.routes:
+        desc = f" ({rule.description})" if rule.description else ""
+        msg = (
+            f"# ufw route {rule.action} in on {rule.in_interface} out on {rule.out_interface}{desc}"
+        )
+        print(style(msg, "cyan"))
+        run(
+            [
+                "ufw",
+                "route",
+                rule.action,
+                "in",
+                "on",
+                rule.in_interface,
+                "out",
+                "on",
+                rule.out_interface,
+            ],
+            sudo=True,
+        )
+
     run("ufw reload", sudo=True)
     run("ufw enable", sudo=True)
 

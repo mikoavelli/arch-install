@@ -146,7 +146,7 @@ stow .
 | `[bootstrap]` | Mirror country selection and base initialization packages. |
 | `[packages.<group>]` | Custom package groups for official repo packages (installed automatically without prompts). Reserved keys: `aur` (applies custom AUR build rules/flags) and `flatpak` (installed via Flathub). |
 | `[services]` | Lists of systemd units to enable, disable, or mask. |
-| `[ufw]` | Port and protocol rules for the UFW firewall. |
+| `[ufw]` | UFW rules with an explicit `action` (`allow`/`deny`/`reject`/`limit`): port rules (`allow`), interface rules (`interfaces`), and routed-forwarding rules (`routes`). |
 | `[secureboot]` | Target binaries signed using `sbctl`. |
 | `[locale]` | System language, regional formats, and localization generation settings. |
 | `[git]` | Git configuration settings and placeholders. |

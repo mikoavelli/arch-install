@@ -152,8 +152,19 @@ mask = [
 ]
 
 [ufw]
-description = "Firewall port configuration"
+description = "Firewall port and interface configuration"
 allow = []
+# Interface rules: `ufw <action> <direction> on <interface>`
+# action: allow, deny, reject or limit; direction: in or out
+interfaces = [
+  { action = "allow", direction = "in", interface = "virbr0", description = "libvirt bridge inbound" },
+  { action = "allow", direction = "out", interface = "virbr0", description = "libvirt bridge outbound" },
+]
+# Route (forwarding) rules: `ufw route <action> in on <in_interface> out on <out_interface>`
+routes = [
+  { action = "allow", in_interface = "virbr0", out_interface = "wlan0", description = "libvirt bridge to wireless uplink" },
+  { action = "allow", in_interface = "virbr0", out_interface = "utun420", description = "libvirt bridge to VPN uplink" },
+]
 
 [secureboot]
 description = "Files to sign for Secure Boot"

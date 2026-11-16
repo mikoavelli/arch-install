@@ -63,10 +63,53 @@ class UfwRule:
     description: str = ""
 
 
+_UFW_ACTIONS = ("allow", "deny", "reject", "limit")
+
+
+@dataclass
+class UfwInterfaceRule:
+    action: str  # "allow", "deny", "reject" or "limit"
+    direction: str  # "in" or "out"
+    interface: str
+    description: str = ""
+
+    def __post_init__(self) -> None:
+        if self.action not in _UFW_ACTIONS:
+            expected = ", ".join(_UFW_ACTIONS)
+            msg = f"Invalid ufw interface rule action: {self.action!r} (expected one of {expected})"
+            raise ConfigError(msg)
+        if self.direction not in ("in", "out"):
+            raise ConfigError(
+                f"Invalid ufw interface rule direction: {self.direction!r} (expected 'in' or 'out')"
+            )
+        if not self.interface:
+            raise ConfigError("Invalid ufw interface rule: 'interface' must not be empty")
+
+
+@dataclass
+class UfwRouteRule:
+    action: str  # "allow", "deny", "reject" or "limit"
+    in_interface: str
+    out_interface: str
+    description: str = ""
+
+    def __post_init__(self) -> None:
+        if self.action not in _UFW_ACTIONS:
+            expected = ", ".join(_UFW_ACTIONS)
+            msg = f"Invalid ufw route rule action: {self.action!r} (expected one of {expected})"
+            raise ConfigError(msg)
+        if not self.in_interface:
+            raise ConfigError("Invalid ufw route rule: 'in_interface' must not be empty")
+        if not self.out_interface:
+            raise ConfigError("Invalid ufw route rule: 'out_interface' must not be empty")
+
+
 @dataclass
 class UfwConfig:
     description: str = ""
     allow: list[UfwRule] = field(default_factory=list)
+    interfaces: list[UfwInterfaceRule] = field(default_factory=list)
+    routes: list[UfwRouteRule] = field(default_factory=list)
 
 
 @dataclass
